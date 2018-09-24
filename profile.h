@@ -11,19 +11,28 @@
 
 
 /**************************** Constants ************************************/
-#define NUM_OF_INPUTS   6
-// Allocate numbers to buttons
-enum buttons{Next_Profile, Next_Clock, Set_Alarm, Up, Down, Set_Feed, None};
 /***************************************************************************/
 
 /**************************** Typedef **************************************/
-typedef enum buttons Buttons;
+typedef uint8_T Feed;
+struct profile{
+    Time alarm1;
+    Time alarm2;
+    Time alarm3;
+    
+    uint8_T feed1;
+    uint8_T feed2;
+    uint8_T feed3;
+    
+    uint8_T alarmStatus1;
+    uint8_T alarmStatus2;
+    uint8_T alarmStatus3;
+}
+typedef struct profile Profile;
 /***************************************************************************/
 
 
 /**************************** Functions ************************************/
-uint8_t button_Get(uint8_t* previous);
-void button_Action();
 /***************************************************************************/
 
 #endif
