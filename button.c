@@ -42,31 +42,31 @@ void button_Action(Buttons button_Pressed)
 	// a jump table directly solves this without the extra comparison
 	switch(button_Pressed)
 	{
-		case: Next_Profile
+		case Next_Profile:
 			// Do stuff
 			// next_Profile();
 			break;
-		case: Next_Clock
+		case Next_Clock:
 			// Do stuff
 			// next_Clock();
 			break;
-		case: Set_Alarm
+		case Set_Alarm:
 			// Do stuff
 			// set_Alarm();
 			break;
-		case: Up
+		case Up:
 			// Do stuff
 			// time_Up();
 			break;
-		case: Down
+		case Down:
 			// Do stuff
 			// time_Down();
 			break;
-		case: Set_Feed
+		case Set_Feed:
 			// Do stuff
 			// set_Feed();
 			break;
-		case: None
+		case None:
 			// Do nothing
 			return;
 	}

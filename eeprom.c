@@ -55,14 +55,14 @@ Errors and omissions should be reported to codelibraries@exploreembedded.com
  **************************************************************************************************/
 void EEPROM_WriteByte(uint16_t var_eepromAddress_u16, uint8_t var_eepromData_u8)
 {
-	while(util_IsBitSet(EECR,EEWE)); // Wait for completion of previous write.
-	                                 // EEWE will be cleared by hardware once Eeprom write is completed.
+	while(util_IsBitSet(EECR,EEPE)); // Wait for completion of previous write.
+	                                 // EEPE will be cleared by hardware once Eeprom write is completed.
 
 	EEAR = var_eepromAddress_u16;  //Load the eeprom address and data
 	EEDR = var_eepromData_u8;
 
-	util_BitSet(EECR,EEMWE);    // Eeprom Master Write Enable
-	util_BitSet(EECR,EEWE);     // Start eeprom write by setting EEWE
+	util_BitSet(EECR,EEMPE);    // Eeprom Master Write Enable
+	util_BitSet(EECR,EEPE);     // Start eeprom write by setting EEPE
 }
 
 
@@ -80,7 +80,7 @@ void EEPROM_WriteByte(uint16_t var_eepromAddress_u16, uint8_t var_eepromData_u8)
  ***************************************************************************************************/
 uint8_t EEPROM_ReadByte(uint16_t var_eepromAddress_u16)
 {
-	while(util_IsBitSet(EECR,EEWE));  //Wait for completion of previous write if any.
+	while(util_IsBitSet(EECR,EEPE));  //Wait for completion of previous write if any.
 
 	EEAR = var_eepromAddress_u16;    //Load the address from where the data needs to be read.
 	util_BitSet(EECR,EERE);   // start eeprom read by setting EERE

@@ -12,9 +12,15 @@ void Profile_RESET(void){
      
     // Declares a Profile with 0 for everything
     Profile profile;
-    profile.alarm1  = 0x00;
-    profile.alarm2  = 0x00;
-    profile.alarm3  = 0x00;
+    profile.alarm1.hour = 0x00;
+    profile.alarm1.min  = 0x00;
+    profile.alarm1.sec  = 0x00;
+    profile.alarm2.hour = 0x00;
+    profile.alarm2.min  = 0x00;
+    profile.alarm2.sec  = 0x00;
+    profile.alarm3.hour = 0x00;
+    profile.alarm3.min  = 0x00;
+    profile.alarm3.sec  = 0x00;
     profile.alarmStatus1 = 0;
     profile.alarmStatus2 = 0;
     profile.alarmStatus3 = 0;

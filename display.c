@@ -14,11 +14,11 @@ void disp_Init()
     I2C_Start();        // Start the I2C communications.
     
     I2C_Write(C_DisplayWriteMode_U8);
-    I2C_Write(C_LedControlRegAddress_U8);	
-    I2C_Write(0x00);
-    I2C_Write(0x00);
-    I2C_Write(0x00);
-    I2C_Write(0x00);
+    I2C_Write(0x05);
+    I2C_Write(0x01);
+    I2C_Write(0x02);
+    I2C_Write(0x03);
+    I2C_Write(0x04);
 	// Do stuff
 	
 	I2C_Stop();

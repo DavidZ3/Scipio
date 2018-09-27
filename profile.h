@@ -8,6 +8,7 @@
 #define _PROFILE_H_
 
 #include "stdutils.h"
+#include "rtc.h"
 #include "eeprom.h" // Used for non-dynamic memory access
 
 
@@ -15,27 +16,27 @@
 /***************************************************************************/
 
 /**************************** Typedef **************************************/
-typedef uint8_T Feed;
+typedef uint8_t Feed;
 struct profile{
     Time alarm1;
     Time alarm2;
     Time alarm3;
     
-    uint8_T feed1;
-    uint8_T feed2;
-    uint8_T feed3;
+    uint8_t feed1;
+    uint8_t feed2;
+    uint8_t feed3;
     
-    uint8_T alarmStatus1;
-    uint8_T alarmStatus2;
-    uint8_T alarmStatus3;
-}
+    uint8_t alarmStatus1;
+    uint8_t alarmStatus2;
+    uint8_t alarmStatus3;
+};
 typedef struct profile Profile;
 
 struct profiles{
     Profile profile1;
     Profile profile2;
     Profile profile3;
-}
+};
 typedef struct profiles Profiles;
 /***************************************************************************/
 
