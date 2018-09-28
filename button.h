@@ -22,8 +22,8 @@ typedef enum buttons Buttons;
 
 
 /**************************** Functions ************************************/
-uint8_t button_Get(uint8_t* previous);
-void button_Action();
+Buttons button_Get(uint8_t* previous);
+void button_Action(Buttons button_Pressed);
 /***************************************************************************/
 
 #endif

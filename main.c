@@ -10,9 +10,13 @@
 #define F_CPU 1000000UL
 
 #include <avr/io.h>
+#include "button.h"
+#include "profile.h"
+
+// The  following *.h are downloaded from the ExploreEmbedded Code Libraray
+#include "eeprom.h" // The Enables are in eeprom.h
 #include "delay.h"
 #include "rtc.h"
-#include "button.h"
 
 void port_Init()
 {
@@ -23,44 +27,96 @@ void port_Init()
     PORTB &= ~(0b111);      // Sets the outputs as off
 }
 
+
+void Profile_RESET(void){
+     
+    // Declares a Profile with 0 for everything
+    Profile profile;
+    profile.alarm1  = 0x00;
+    profile.alarm2  = 0x00;
+    profile.alarm3  = 0x00;
+    profile.alarmStatus1 = 0;
+    profile.alarmStatus2 = 0;
+    profile.alarmStatus3 = 0;
+    profile.feed1 = 0;
+    profile.feed2 = 0;
+    profile.feed3 = 0;
+    
+    // Declare a Profiles with the zero Profile all three profiles
+    Profiles profiles;
+    profiles.profile1 = profile;
+    profiles.profile2 = profile;
+    profiles.profile3 = profile;
+
+    // Write the profile to EEPROM memory
+    char eeprom_address = 0x00;
+    EEPROM_WriteNBytes(eeprom_address, &profiles, sizeof(Profiles));
+} 
+
+void Profile_LOAD(Profiles* profiles){
+    char eeprom_address = 0x00;
+    EEPROM_ReadNBytes(eeprom_address, profiles, sizeof(Profiles));
+}
+
 int main(void)
 {
     port_Init();
     RTC_Init();
+   
+    // Declares profiles and profile1, profile2 and profile3
+    Profiles profiles;
+    Profile profile1;
+    Profile profile2;
+    Profile profile3;
+    profiles.profile1 = profile1;
+    profiles.profile2 = profile2;
+    profiles.profile3 = profile3;
+    
+    
+    Profile_RESET();    // The reset is usesd to set all profiles to the zero profile
+    Profile_LOAD(&profiles);
     
     // Sets the RTC Time
     Time t;     // Typedef in rtc.h
     t.hour  = 0x00;
     t.min   = 0x00;
-    t.sec   = 0x00;   
+    t.sec   = 0x00;
+    
     RTC_SetTime(t.hour, t.min, t.sec);
     
-    // Note: The the bits are used individually
-    // Bit 0:   Next_Profile
-    // Bit 1:   Next_Clock
-    // Bit 2:   Set_Alarm
-    // Bit 3:   Up
-    // Bit 4:   Down
-    // Bit 5:   Set_Feed
-    // Bit 6:   None
-    // Bit 7:   (Not used/don't care)
+    // note: the the bits are used individually
+    // bit 0:   next_profile
+    // bit 1:   next_clock
+    // bit 2:   set_time
+    // bit 3:   up
+    // bit 4:   down
+    // bit 5:   set_feed
+    // bit 6:   manual dispense 
+    // bit 7:   none 
     uint8_t previous = 0b0;  // Stores the previous state of the buttons for positive edge triggering    
   
     Buttons button_Pressed = None;
+     
+    uint8_t feed_Status = 0;
     while (1) 
     {
         button_Pressed = button_Get(&previous);
+        button_Action(button_Pressed);
         RTC_GetTime(&t.hour, &t.min, &t.sec);
 		// Check if the current times match alarm times
 		// Check if there are button inputs
-        if((PINB & 0b10) != 0){
+        DELAY_ms(500); // Wait 0.5 seconds after each loop cycle 
+   }
+    return 0;
+}
+           
+        /*
+         if((PINB & 0b10) != 0){
             DELAY_ms(500);
         }else{
             DELAY_ms(250);
         }
         PORTB = PORTB ^ 0b1;
-           
-        /*
        	PORTB = 0b1;
        	DELAY_ms(500);
         
@@ -79,7 +135,4 @@ int main(void)
    		    DELAY_ms(500);
         }
         */     
-    }
-    return 0;
-}
 

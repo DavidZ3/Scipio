@@ -18,7 +18,7 @@
 // Bit 5:   Set_Feed
 // Bit 6:   None
 // Bit 7:   (Not used/don't care)
-uint8_t button_Get(uint8_t* previous)
+Buttons button_Get(uint8_t* previous)
 {
     // Reads the buttons for positive edge triggering
     for(int port_Num = 0; port_Num < NUM_OF_INPUTS; port_Num++)
@@ -28,7 +28,7 @@ uint8_t button_Get(uint8_t* previous)
 			((*previous & (0b1 << port_Num)) != 0))
 			{
                 *previous |= (0b1 << port_Num);
-                return port_Num;
+                return (Buttons) port_Num;
             }
 	}
     return None;   // If no buttons have been pressed return NO_INPUTS

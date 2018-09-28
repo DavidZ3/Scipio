@@ -8,6 +8,7 @@
 #define _PROFILE_H_
 
 #include "stdutils.h"
+#include "eeprom.h" // Used for non-dynamic memory access
 
 
 /**************************** Constants ************************************/
@@ -29,10 +30,19 @@ struct profile{
     uint8_T alarmStatus3;
 }
 typedef struct profile Profile;
+
+struct profiles{
+    Profile profile1;
+    Profile profile2;
+    Profile profile3;
+}
+typedef struct profiles Profiles;
 /***************************************************************************/
 
 
 /**************************** Functions ************************************/
+void Profile_RESET(void);
+void Profile_LOAD(Profiles* profiles);
 /***************************************************************************/
 
 #endif
