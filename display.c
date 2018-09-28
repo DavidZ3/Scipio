@@ -14,7 +14,11 @@ void disp_Init()
     I2C_Start();        // Start the I2C communications.
     
     I2C_Write(C_DisplayWriteMode_U8);
-	
+    I2C_Write(C_LedControlRegAddress_U8);	
+    I2C_Write(0x00);
+    I2C_Write(0x00);
+    I2C_Write(0x00);
+    I2C_Write(0x00);
 	// Do stuff
 	
 	I2C_Stop();
@@ -25,6 +29,6 @@ void disp_Set(uint8_t hour, uint8_t min)
 	
 }
 
-void disp_View(char* display[]){
+void disp_View(uint8_t* hour, uint8_t* min){
 	I2C_Write(C_DisplayReadMode_U8);
 }

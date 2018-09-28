@@ -12,6 +12,7 @@
 #include <avr/io.h>
 #include "button.h"
 #include "profile.h"
+#include "display.h"
 
 // The  following *.h are downloaded from the ExploreEmbedded Code Libraray
 #include "eeprom.h" // The Enables are in eeprom.h
@@ -31,6 +32,7 @@ int main(void)
 {
     port_Init();
     RTC_Init();
+    disp_Init();
    
     // Declares profiles and profile1, profile2 and profile3
     Profiles profiles;
