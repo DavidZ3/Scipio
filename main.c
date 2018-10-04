@@ -36,16 +36,21 @@ int main(void)
    
     // Declares profiles and profile1, profile2 and profile3
     Profiles profiles;
+    
+    /* Probably dont need this
+    Profile profile0;
     Profile profile1;
     Profile profile2;
-    Profile profile3;
-    profiles.profile1 = profile1;
-    profiles.profile2 = profile2;
-    profiles.profile3 = profile3;
-    
+
+    profiles.profile[0] = profile0;
+    profiles.profile[1] = profile1;
+    profiles.profile[2] = profile2;
+    */
     
     Profile_RESET();    // The reset is usesd to set all profiles to the zero profile
     Profile_LOAD(&profiles);
+    
+    
     
     // Sets the RTC Time
     Time t;     // Typedef in rtc.h
@@ -67,43 +72,34 @@ int main(void)
     uint8_t previous = 0b0;  // Stores the previous state of the buttons for positive edge triggering    
   
     Buttons button_Pressed = None;
-     
+    uint8_t profile_Number = 1;
+    Profile profile_Selected = profiles.profile[profile_Number];
+    uint8_t clock_Current = CLOCK;
+    uint8_t mode = TIME_MODE;
+    uint8_t change_Flag = 0;
     uint8_t feed_Status = 0;
     while (1) 
     {
         button_Pressed = button_Get(&previous);
-        button_Action(button_Pressed);
+        button_Action(button_Pressed, &profiles, &profile_Number,
+                &clock_Current, &change_Flag);
         RTC_GetTime(&t.hour, &t.min, &t.sec);
-		// Check if the current times match alarm times
+        if(change_Flag == 1){
+            // Do stuff
+            // update time
+            // check for current profile and current clock
+            // check for set alarms (if set start blinking)
+            // check if the current mode is time or feed
+            // displayOnScreen(t) or dispOnScreen(feedMode)
+            
+            profile_Selected = profiles.profile[profile_Number]; // selected profile
+             
+
+            change_Flag = 0;
+        }
+		// Check if the current times match active alarm times; feed if it does
 		// Check if there are button inputs
         DELAY_ms(500); // Wait 0.5 seconds after each loop cycle 
    }
     return 0;
 }
-           
-        /*
-         if((PINB & 0b10) != 0){
-            DELAY_ms(500);
-        }else{
-            DELAY_ms(250);
-        }
-        PORTB = PORTB ^ 0b1;
-       	PORTB = 0b1;
-       	DELAY_ms(500);
-        
-        
-        for(int i = 0; i < min; i++){
-            DELAY_ms(500);
-        }
-        
-                 
-   		PORTB = 0b0;
-        
-        DELAY_ms(100);
-        
-        
-        for(int i = 0; i < min; i++){
-   		    DELAY_ms(500);
-        }
-        */     
-

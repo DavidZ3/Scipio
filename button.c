@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include "button.h"
+#include "profile.h"    // Used for loading/writing profiles
 
 
 // Note: The the bits are used individually
@@ -35,24 +36,50 @@ Buttons button_Get(uint8_t* previous)
 }
 
 
-
-void button_Action(Buttons button_Pressed)
+void button_Action(
+        Buttons button_Pressed, Profiles* profiles, 
+        uint8_t* profile_Number, uint8_t* clock_Current,
+        uint8_t* change_Flag)
 {
 	// A if statement is not used to check if the button is None as
 	// a jump table directly solves this without the extra comparison
+
+    // Load the profile
+    
+    Profiles profiles_Stored;
+    Profile_LOAD(&profiles_Stored);
+
 	switch(button_Pressed)
 	{
 		case Next_Profile:
 			// Do stuff
 			// next_Profile();
-			break;
-		case Next_Clock:
+            if(*profile_Number == 3){
+                *profile_Number = 2;
+            }
+            else{
+                (*profile_Number)++;
+            }
+            *change_Flag = 1;
+            break;
+        case Next_Clock:
 			// Do stuff
 			// next_Clock();
+            if(*clock_Current == ALARM_3){
+                *clock_Current = CLOCK;
+            }else{
+                (*clock_Current)++;
+            }
+
+            *change_Flag = 1;
 			break;
 		case Set_Alarm:
 			// Do stuff
 			// set_Alarm();
+            if(*clock_Current != CLOCK){
+                (*profiles).profile[*profile_Number].alarmStatus[*clock_Current] ^= 1;
+                // XORs the alarm status with 0b1  to toggle it
+            }
 			break;
 		case Up:
 			// Do stuff

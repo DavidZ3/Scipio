@@ -42,7 +42,6 @@ Errors and omissions should be reported to codelibraries@exploreembedded.com
 #define _EEPROM_H
 
 #include <avr\io.h>
-#include <avr/eeprom.h>
 #include "stdutils.h"
 
 

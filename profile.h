@@ -13,29 +13,27 @@
 
 
 /**************************** Constants ************************************/
+#define CLOCK       0
+#define ALARM_1     1
+#define ALARM_2     2
+#define ALARM_3     3
+
+#define TIME_MODE   0
+#define FEED_MODE   1
+
 /***************************************************************************/
 
 /**************************** Typedef **************************************/
 typedef uint8_t Feed;
 struct profile{
-    Time alarm1;
-    Time alarm2;
-    Time alarm3;
-    
-    uint8_t feed1;
-    uint8_t feed2;
-    uint8_t feed3;
-    
-    uint8_t alarmStatus1;
-    uint8_t alarmStatus2;
-    uint8_t alarmStatus3;
+    Time alarm[3];
+    uint8_t feed[3];
+    uint8_t alarmStatus[3];
 };
 typedef struct profile Profile;
 
 struct profiles{
-    Profile profile1;
-    Profile profile2;
-    Profile profile3;
+    Profile profile[3];
 };
 typedef struct profiles Profiles;
 /***************************************************************************/

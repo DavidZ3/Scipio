@@ -8,6 +8,7 @@
 #define _BUTTON_H_
 
 #include "stdutils.h"
+#include "profile.h"
 
 
 /**************************** Constants ************************************/
@@ -23,7 +24,9 @@ typedef enum buttons Buttons;
 
 /**************************** Functions ************************************/
 Buttons button_Get(uint8_t* previous);
-void button_Action(Buttons button_Pressed);
+void button_Action(Buttons button_Pressed, Profiles* profiles,
+        uint8_t* profile_Number, uint8_t* clock_Current,
+        uint8_t* change_FLag);
 /***************************************************************************/
 
 #endif
