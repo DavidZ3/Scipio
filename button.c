@@ -80,6 +80,7 @@ void button_Action(
                 (*profiles).profile[*profile_Number].alarmStatus[*clock_Current] ^= 1;
                 // XORs the alarm status with 0b1  to toggle it
             }
+            *change_Flag = 1;
 			break;
 		case Up:
 			// Do stuff
