@@ -72,6 +72,8 @@ void RTC_GetDate(uint8_t *,uint8_t *,uint8_t *);
 /**************************************************************************************************/
 
 // Added by David Zhou
+// Time is stored in base 10 e.g. 07:42:14 is stored as: hour = 07; min = 42; sec = 14;
+// The RTC functions output time as hex which must be converted into dec
 struct time{
 	uint8_t hour;
 	uint8_t min;

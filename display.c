@@ -27,7 +27,7 @@ void disp_Stop()
 void disp_Cursor(uint8_t position)
 {
     // Checks if the position is invalid
-    if((position < DIGIT_1) || (position > DIGIT_3)){
+    if((position < DIGIT_1) || (position > DIGIT_4)){
         return;
     }
     I2C_Write(CURSOR_CONTROL);
