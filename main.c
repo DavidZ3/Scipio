@@ -31,8 +31,6 @@ void port_Init()
 int main(void)
 {
     port_Init();
-    RTC_Init();
-    disp_Init();
    
     // Declares profiles and profile1, profile2 and profile3
     Profiles profiles;
@@ -78,12 +76,34 @@ int main(void)
     uint8_t mode = TIME_MODE;
     uint8_t change_Flag = 0;
     uint8_t feed_Status = 0;
+    
+
     while (1) 
     {
         button_Pressed = button_Get(&previous);
         button_Action(button_Pressed, &profiles, &profile_Number,
                 &clock_Current, &change_Flag);
-        RTC_GetTime(&t.hour, &t.min, &t.sec);
+        
+        disp_Set(t.min, t.sec);
+        
+        if(t.sec == 59){
+            t.sec = 0;
+            t.min++;
+            RTC_GetTime(&t.hour, &t.min, &t.sec);   // Gets time from RTC once a minute
+            // Reads hex as dec as rtc returns time in hex e.g. 45 min is 0x45
+            t.hour = (t.hour/0x10)*10 + t.hour%0x10;
+            t.min  = (t.min/0x10)*10  + t.min%0x10;
+            t.sec  = (t.sec/0x10)*10  + t.sec%0x10;
+        }
+        else{
+            t.sec++;   
+        }
+        if(t.min == 59){
+            t.min = 0;
+        }
+        
+
+
         if(change_Flag == 1){
             // Do stuff
             // update time
@@ -93,13 +113,11 @@ int main(void)
             // displayOnScreen(t) or dispOnScreen(feedMode)
             
             profile_Selected = profiles.profile[profile_Number]; // selected profile
-             
-
             change_Flag = 0;
         }
 		// Check if the current times match active alarm times; feed if it does
 		// Check if there are button inputs
-        DELAY_ms(500); // Wait 0.5 seconds after each loop cycle 
+        DELAY_ms(1000); // Wait 1 seconds after each loop cycle 
    }
     return 0;
 }

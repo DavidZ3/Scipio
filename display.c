@@ -14,8 +14,13 @@ void disp_Init()
     I2C_Start();        // Start the I2C communications.
     
     I2C_Write(C_DisplayWriteMode_U8);   // Selects the I2C LED Display
-    I2C_Write(CLEAR_DISPLAY);           // Clears the display
-    
+    // I2C_Write(CLEAR_DISPLAY);           // Clears the display
+    // I2C_Write(DECIMAL_CONTROL);
+    // I2C_Write(COLON);
+}
+
+void disp_Stop()
+{
     I2C_Stop();
 }
 
@@ -24,8 +29,7 @@ void disp_Cursor(uint8_t position)
     // Checks if the position is invalid
     if((position < DIGIT_1) || (position > DIGIT_3)){
         return;
-    }    
-    
+    }
     I2C_Write(CURSOR_CONTROL);
     I2C_Write(position);
 }
@@ -43,17 +47,26 @@ void disp_Clear(void)
 
 void disp_Set(uint8_t hour, uint8_t min)
 {
+    disp_Init();
+    
 	// Splits the hours/min into their corresponding digits
     uint8_t digit1 = hour/10;
     uint8_t digit2 = hour%10;
     uint8_t digit3 = min/10;
     uint8_t digit4 = min%10;
     
-    disp_Cursor(DIGIT_1);
+    // Clears display and write time
+    disp_Clear();
     I2C_Write(digit1);
     I2C_Write(digit2);
     I2C_Write(digit3);
     I2C_Write(digit4);
+    
+    // Turns on the colon
+    I2C_Write(DECIMAL_CONTROL);
+    I2C_Write(COLON);
+    
+    disp_Stop();
 }
 
 void disp_View(uint8_t* hour, uint8_t* min){

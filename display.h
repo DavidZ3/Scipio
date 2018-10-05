@@ -28,7 +28,7 @@
 #define FACTORY_RESET               0x81
 
 // Decimal Control
-#define COLON                       0x04
+#define COLON                       0b010000
 
 // Digit Definitions
 #define DIGIT_1                     0x00
@@ -43,7 +43,8 @@
 
 
 /**************************** Functions ************************************/
-void disp_Init();
+void disp_Init(void);
+void disp_Stop(void);
 void disp_Cursor(uint8_t position);
 void disp_Cusor_Digit(uint8_t position, uint8_t digit);
 void disp_Clear(void);
