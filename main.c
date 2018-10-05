@@ -47,7 +47,7 @@ int main(void)
     profiles.profile[2] = profile2;
     */
     
-    Profile_RESET();    // The reset is usesd to set all profiles to the zero profile
+    Profile_RESET();    // The reset is used to set all profiles to the zero profile
     Profile_LOAD(&profiles);
     
     
