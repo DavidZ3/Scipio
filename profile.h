@@ -45,7 +45,7 @@ typedef struct profiles Profiles;
 
 /**************************** Functions ************************************/
 void Profile_RESET(void);               // Used to initalise profiles in memory and set all the values to zero
-void Profile_STORE(Profile* profiles);  // Used to store the input profile in memory
+void Profile_STORE(Profiles* profiles);  // Used to store the input profile in memory
 void Profile_LOAD(Profiles* profiles);  // Used to load the profile in memory to profiles
 /***************************************************************************/
 

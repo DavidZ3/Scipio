@@ -17,38 +17,38 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
     {
         // TODO: Write a blink function for the alarms and make sure to have the other alarms as off when the profile is switched
         case CLOCK:
-        disp_Set(t.min, t.sec); // displays the time
-        break;
+            disp_Set(t.min, t.sec); // displays the time
+            break;
         case ALARM_1:
-        if(mode == FEED_MODE){
-            disp_Set(profile_Selected.alarm[ALARM_1].hour, profile_Selected.alarm[ALARM_1].min);    // displays alarm 1
+            if(mode == TIME_MODE){
+                disp_Set(profile_Selected.alarm[ALARM_1].hour, profile_Selected.alarm[ALARM_1].min);    // displays alarm 1
             }else{
-            disp_Set(00, profile_Selected.feed[ALARM_1]);
-        }
-        if(profile_Selected.alarmStatus[ALARM_1]){
-            // blink Alarm1 led
-        }
-        break;
+                disp_Set(00, profile_Selected.feed[ALARM_1]);
+            }
+            if(profile_Selected.alarmStatus[ALARM_1]){
+                // blink Alarm1 led
+            }
+            break;
         case ALARM_2:
-        if(mode == FEED_MODE){
-            disp_Set(profile_Selected.alarm[ALARM_2].hour, profile_Selected.alarm[ALARM_2].min);    // displays alarm 2
+            if(mode == TIME_MODE){
+                disp_Set(profile_Selected.alarm[ALARM_2].hour, profile_Selected.alarm[ALARM_2].min);    // displays alarm 2
             }else{
-            disp_Set(00, profile_Selected[ALARM_2]);
-        }
-        if(profile_Selected.alarmStatus[ALARM_2]){
-            // blink Alarm2 led
-        }
-        break;
+                disp_Set(00, profile_Selected.feed[ALARM_2]);
+            }
+            if(profile_Selected.alarmStatus[ALARM_2]){
+                // blink Alarm2 led
+            }
+            break;
         case ALARM_3:
-        if(mode == FEED_MODE){
-            disp_Set(profile_Selected.alarm[ALARM_3].hour, profile_Selected.alarm[ALARM_3].min);    // displays alarm 3
+            if(mode == TIME_MODE){
+                disp_Set(profile_Selected.alarm[ALARM_3].hour, profile_Selected.alarm[ALARM_3].min);    // displays alarm 3
             }else{
-            disp_Set(00, profile_Selected.feed[ALARM_3]);
-        }
-        if(profile_Selected.alarmStatus[ALARM_3]){
-            // blink Alarm3 led
-        }
-        break;
+                disp_Set(00, profile_Selected.feed[ALARM_3]);
+            }
+            if(profile_Selected.alarmStatus[ALARM_3]){
+                // blink Alarm3 led
+            }
+            break;
     }
 }
 
@@ -75,7 +75,7 @@ void internal_Clock_Increment(Time* t){
      
     // Gets time from RTC once a minute at the 30sec mark
     if(t->sec == 30){
-        RTC_GetTime(&t.hour, &t.min, &t.sec);  
+        RTC_GetTime(&t->hour, &t->min, &t->sec);  
         // Reads hex as dec as the RTC returns time in hex e.g. 45 min is 0x45
         t->hour = HEX2DEC(t->hour);
         t->min  = HEX2DEC(t->min);
