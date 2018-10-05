@@ -17,8 +17,8 @@
 // Bit 3:   Up
 // Bit 4:   Down
 // Bit 5:   Set_Feed
-// Bit 6:   None
-// Bit 7:   (Not used/don't care)
+// Bit 6:   Manual Dispense
+// Bit 7:   None
 Buttons button_Get(uint8_t* previous)
 {
     // Reads the buttons for positive edge triggering
@@ -36,10 +36,12 @@ Buttons button_Get(uint8_t* previous)
 }
 
 
+// NOTE: The *change_Flag is used to indicate when the profile needs to be changed or
+//       when the profile in EEPROM needs to be updated
 void button_Action(
         Buttons button_Pressed, Profiles* profiles, 
         uint8_t* profile_Number, uint8_t* clock_Current,
-        uint8_t* change_Flag)
+        uint8_t* change_Flag, uint8_t* mode)
 {
 	// A if statement is not used to check if the button is None as
 	// a jump table directly solves this without the extra comparison
@@ -60,7 +62,7 @@ void button_Action(
             else{
                 (*profile_Number)++;
             }
-            *change_Flag = 1;
+            *change_Flag = 0;
             break;
         case Next_Clock:
 			// Do stuff
@@ -71,7 +73,7 @@ void button_Action(
                 (*clock_Current)++;
             }
 
-            *change_Flag = 1;
+            *change_Flag = 0;
 			break;
 		case Set_Alarm:
 			// Do stuff
@@ -93,7 +95,16 @@ void button_Action(
 		case Set_Feed:
 			// Do stuff
 			// set_Feed();
+            if(*mode == TIME_MODE){
+                *mode = FEED_MODE;   
+            }else if(*mode == FEED_MODE){
+                *mode = TIME_MODE;   
+            }
+            *change_Flag = 0;
 			break;
+        case Manual_Dispense:
+            // Dispense while the button is held down
+            break;
 		case None:
 			// Do nothing
 			return;

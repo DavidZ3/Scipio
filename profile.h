@@ -21,6 +21,10 @@
 #define TIME_MODE   0
 #define FEED_MODE   1
 
+#define PROFILE_1   0
+#define PROFILE_2   1
+#define PROFILE_3   2
+
 /***************************************************************************/
 
 /**************************** Typedef **************************************/
@@ -40,8 +44,9 @@ typedef struct profiles Profiles;
 
 
 /**************************** Functions ************************************/
-void Profile_RESET(void);
-void Profile_LOAD(Profiles* profiles);
+void Profile_RESET(void);               // Used to initalise profiles in memory and set all the values to zero
+void Profile_STORE(Profile* profiles);  // Used to store the input profile in memory
+void Profile_LOAD(Profiles* profiles);  // Used to load the profile in memory to profiles
 /***************************************************************************/
 
 #endif

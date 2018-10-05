@@ -30,7 +30,13 @@ void Profile_RESET(void){
     char eeprom_address = 0x00;
     EEPROM_WriteNBytes(eeprom_address, (uint8_t*) &profiles, sizeof(profiles));
     
-} 
+}
+
+void Profile_STORE(Profile* profiles){
+    // Write the profile to EEPROM memory
+    char eeprom_address = 0x00;
+    EEPROM_WriteNBytes(eeprom_address, (uint8_t*) profiles, sizeof(profiles));
+}
 
 void Profile_LOAD(Profiles* profiles){
     char eeprom_address = 0x00;

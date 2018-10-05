@@ -36,8 +36,6 @@
 #define DIGIT_3                     0x02
 #define DIGIT_4                     0x03
 
-//#define M_LedClearBit(x) util_BitClear((M_LedControlBus), (x));
-//#define M_LedClearSet(x) util_BitSet((M_LedControlBus), (x));
 /***************************************************************************/
 
 

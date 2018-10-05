@@ -12,9 +12,9 @@
 
 
 /**************************** Constants ************************************/
-#define NUM_OF_INPUTS   6
+#define NUM_OF_INPUTS   7
 // Allocate numbers to buttons
-enum buttons{Next_Profile, Next_Clock, Set_Alarm, Up, Down, Set_Feed, None};
+enum buttons{Next_Profile, Next_Clock, Set_Alarm, Up, Down, Set_Feed, Manual_Dispense, None};
 /***************************************************************************/
 
 /**************************** Typedef **************************************/
@@ -26,7 +26,7 @@ typedef enum buttons Buttons;
 Buttons button_Get(uint8_t* previous);
 void button_Action(Buttons button_Pressed, Profiles* profiles,
         uint8_t* profile_Number, uint8_t* clock_Current,
-        uint8_t* change_FLag);
+        uint8_t* change_FLag, uint8_t* mode);
 /***************************************************************************/
 
 #endif
