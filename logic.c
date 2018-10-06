@@ -16,9 +16,6 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
     switch(clock_Current)
     {
         // TODO: Write a blink function for the alarms and make sure to have the other alarms as off when the profile is switched
-        case CLOCK:
-            disp_Set(t.min, t.sec); // displays the time
-            break;
         case ALARM_1:
             if(mode == TIME_MODE){
                 disp_Set(profile_Selected.alarm[ALARM_1].hour, profile_Selected.alarm[ALARM_1].min);    // displays alarm 1
@@ -48,6 +45,9 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
             if(profile_Selected.alarmStatus[ALARM_3]){
                 // blink Alarm3 led
             }
+            break;
+        case CLOCK:
+            disp_Set(t.min, t.sec); // displays the time
             break;
     }
 }
@@ -81,4 +81,31 @@ void internal_Clock_Increment(Time* t){
         t->min  = HEX2DEC(t->min);
         t->sec  = HEX2DEC(t->sec);
     }
+}
+
+uint8_t time_Equal(Time t1, Time t2){
+    // Checks if the hours are equal
+    if(t1.hour != t2.hour){
+        return 0;
+    } 
+    // Checks if the minutes are equal
+    if(t1.min != t2.min){
+        return 0;
+    }
+    return 1;
+}
+
+void alarm_Check(Profile profile_Selected, Time t){
+    for(uint8_t index = ALARM_1; index < NUM_OF_ALARMS; index++){
+        // Check if the current alarm is armed
+        if(profile_Selected.alarmStatus[index] == ARMED){
+            // If the armed alarm's time matches the current time 
+            if(time_Equal(profile_Selected.alarm[index], t)){
+                // Might need to add some sort of tracking variable to prevent
+                // feed cycle triggering more than once. e.g FeedStatus
+                // dispenseFood(); 
+            }
+        }
+    } 
+
 }

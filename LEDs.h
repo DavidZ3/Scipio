@@ -20,10 +20,10 @@
 
 
 // PORT_B(5:6) is used to display which clock/alarm is selected
-// 00 = 0 = CLOCK LED
-// 01 = 1 = ALARM 1 LED
-// 10 = 2 = ALARM 2 LED
-// 11 = 3 = ALARM 3 LED
+// 00 = 0 = ALARM 1 LED
+// 01 = 1 = ALARM 2 LED
+// 10 = 2 = ALARM 3 LED
+// 11 = 3 = CLOCK LED
 
 // These are already defined in profile.h
 /***************************************************************************/

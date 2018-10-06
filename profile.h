@@ -13,17 +13,22 @@
 
 
 /**************************** Constants ************************************/
-#define CLOCK       0
-#define ALARM_1     1
-#define ALARM_2     2
-#define ALARM_3     3
+#define ALARM_1         0
+#define ALARM_2         1
+#define ALARM_3         2
+#define CLOCK           3
 
-#define TIME_MODE   0
-#define FEED_MODE   1
+#define NUM_OF_ALARMS   3
 
-#define PROFILE_1   0
-#define PROFILE_2   1
-#define PROFILE_3   2
+#define UNARMED         0
+#define ARMED           1
+
+#define TIME_MODE       0
+#define FEED_MODE       1
+
+#define PROFILE_1       0
+#define PROFILE_2       1
+#define PROFILE_3       2
 
 /***************************************************************************/
 
