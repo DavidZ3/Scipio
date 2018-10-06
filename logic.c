@@ -12,7 +12,11 @@
 #include "rtc.h"		// Used for the Time datatype and RTC functions
 
 
-void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Selected, Time t){
+void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Selected, Time t, uint8_t colon_Status){
+    
+    // Toggles the colon blink status once a second
+
+    
     switch(clock_Current)
     {
         // TODO: Write a blink function for the alarms and make sure to have the other alarms as off when the profile is switched
@@ -48,6 +52,7 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
             break;
         case CLOCK:
             disp_Set(t.min, t.sec); // displays the time
+            disp_Blink(colon_Status);
             break;
     }
 }
@@ -73,8 +78,9 @@ void internal_Clock_Increment(Time* t){
         (t->sec)++;
     }    
      
-    // Gets time from RTC once a minute at the 30sec mark
-    if(t->sec == 30){
+    // Gets time from RTC once a minute at the 50sec mark to ensure the time
+    // is relatively accurate at each minute
+    if(t->sec == 50){
         RTC_GetTime(&t->hour, &t->min, &t->sec);  
         // Reads hex as dec as the RTC returns time in hex e.g. 45 min is 0x45
         t->hour = HEX2DEC(t->hour);

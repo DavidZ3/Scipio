@@ -9,6 +9,11 @@
 
 #include "stdutils.h"
 
+/**************************** Control Varible *******************************/
+// Used to turn on and off blinking where 1 is on
+#define     BLINK_MODE              1
+/***************************************************************************/
+
 /**************************** Constants ************************************/
 #define C_DisplayReadMode_U8        0xE3
 #define C_DisplayWriteMode_U8       0xE2
@@ -46,9 +51,8 @@ void disp_Stop(void);
 void disp_Cursor(uint8_t position);
 void disp_Cusor_Digit(uint8_t position, uint8_t digit);
 void disp_Clear(void);
+void disp_Blink(uint8_t colon_Status);
 void disp_Set(uint8_t hour, uint8_t min);
-void disp_View(uint8_t* hour, uint8_t* min);
-
 /***************************************************************************/
 
 #endif

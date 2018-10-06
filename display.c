@@ -45,10 +45,23 @@ void disp_Clear(void)
     I2C_Write(CLEAR_DISPLAY);   // Clear display command, and resets the cursor    
 }
 
+void disp_Blink(uint8_t colon_Status){    
+    disp_Init();
+    
+    I2C_Write(DECIMAL_CONTROL);
+    if(BLINK_MODE && (colon_Status == 0)){
+        I2C_Write(0);   
+    }else{
+        I2C_Write(COLON);   
+    }        
+
+    disp_Stop();
+}
+
 void disp_Set(uint8_t hour, uint8_t min)
 {
     disp_Init();
-    
+       
 	// Splits the hours/min into their corresponding digits
     uint8_t digit1 = hour/10;
     uint8_t digit2 = hour%10;
@@ -56,20 +69,11 @@ void disp_Set(uint8_t hour, uint8_t min)
     uint8_t digit4 = min%10;
     
     // Clears display and write time
-    disp_Clear();
+    disp_Cursor(DIGIT_1);
     I2C_Write(digit1);
     I2C_Write(digit2);
     I2C_Write(digit3);
     I2C_Write(digit4);
     
-    // Turns on the colon
-    I2C_Write(DECIMAL_CONTROL);
-    I2C_Write(COLON);
-    
     disp_Stop();
-}
-
-void disp_View(uint8_t* hour, uint8_t* min){
-	I2C_Write(C_DisplayReadMode_U8);
-    // To be completed
 }

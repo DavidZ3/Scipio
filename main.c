@@ -39,13 +39,23 @@ int main(void)
     Profile_RESET();    // The reset is used to set all profiles to the zero profile
     Profile_LOAD(&profiles);
     
-    // Sets the RTC Time
-    // Load RTC Time later instead of setting
     Time t;     // Typedef in rtc.h
     t.hour  = 0x00;
     t.min   = 0x00;
     t.sec   = 0x00;
+    
+    // Sets the RTC Time    
     RTC_SetTime(t.hour, t.min, t.sec);
+    
+    // Loads RTC Time
+    //RTC_GetTime(&t.hour, &t.min, &t.sec);
+    
+    // Performs a direct conversion from hex to dec e.g. 0x12 -> 12
+    t.hour  = HEX2DEC(t.hour);
+    t.min   = HEX2DEC(t.min);
+    t.sec   = HEX2DEC(t.sec);
+    
+
     
     // Start with no buttons pressed before reading in button inputs
     uint8_t previous = 0;   // Stores the previous state of the buttons for positive edge triggering    
@@ -70,7 +80,9 @@ int main(void)
     // Used to provide a 1 second delay 
     uint8_t cycle = 0;  // Used to perform certain actions once a second regardless of the actual delay
                         // assuming the delay is < 1sec and is a factor of 1 sec
-
+    
+    // Used to control the colon blink
+    uint8_t colon_Status = 0;
     while (1) 
     {
         button_Pressed = button_Get(&previous);
@@ -88,12 +100,15 @@ int main(void)
             Profile_STORE(&profiles);   // Stores profiles in EEPROM
             change_Flag = 0;
         }
+        // Used to display the correct clock/feed selection
+        display_Selection(clock_Current, mode, profile_Selected, t, colon_Status);
         
-        display_Selection(clock_Current, mode, profile_Selected, t); // Used to display the correct clock/feed selection
-              
         // Tracks the time using the uC internal Oscillator, but fetches the RTC time once a minute for accuracy   
-        if(cycle == 1000/DELAY_TIME){
-            internal_Clock_Increment(&t);
+        if(cycle == (1000/DELAY_TIME - 1)){
+            // Toggles the colon blink status once a second
+            colon_Status ^= 1;
+            // Increment t.sec once a second            
+            internal_Clock_Increment(&t);        
             cycle = 0;
         }else{
             cycle++;
