@@ -36,37 +36,33 @@ int main(void)
     // Declares profiles and load EEPROM into &profiles
     // The reset will no longer be used later
     Profiles profiles;
-    Profile_RESET();    // The reset is used to set all profiles to the zero profile
+    //Profile_RESET();    // The reset is used to set all profiles to the zero profile
     Profile_LOAD(&profiles);
     
     Time t;     // Typedef in rtc.h
-    t.hour  = 0x00;
-    t.min   = 0x00;
-    t.sec   = 0x00;
+    t.hour  = 0;
+    t.min   = 0;
+    t.sec   = 0;
     
-    // Sets the RTC Time    
+    // Sets the RTC Time
+    toRTC(&t);      // Read time values as HEX before storing to the RTC
     RTC_SetTime(t.hour, t.min, t.sec);
+    fromRTC(&t);    // Change back to DEC as time is stored in base 10 in this program
     
     // Loads RTC Time
     //RTC_GetTime(&t.hour, &t.min, &t.sec);
-    
-    // Performs a direct conversion from hex to dec e.g. 0x12 -> 12
-    t.hour  = HEX2DEC(t.hour);
-    t.min   = HEX2DEC(t.min);
-    t.sec   = HEX2DEC(t.sec);
-    
+    //fromRTC(&t);
 
-    
     // Start with no buttons pressed before reading in button inputs
     uint8_t previous = 0;   // Stores the previous state of the buttons for positive edge triggering    
     Buttons button_Pressed = None;
     
     // Set initial profile as profile 1
     uint8_t profile_Number = PROFILE_1;
-    Profile profile_Selected = profiles.profile[profile_Number];
+    Profile* profile_Selected = &profiles.profile[profile_Number];
     
     // Sets initial clock/alarm displayed as CLOCK  
-    uint8_t clock_Current = CLOCK;
+    uint8_t clock_Current = ALARM_1;
     
     // Sets the initial mode in TIME_MODE instead of FEED_MODE
     uint8_t mode = TIME_MODE;
@@ -83,6 +79,21 @@ int main(void)
     
     // Used to control the colon blink
     uint8_t colon_Status = 0;
+    
+    // Test Code /////////////////////////////////////////////////////////////
+    /*
+    profiles.profile[0].alarm[0].hour   = 05;
+    profiles.profile[0].alarm[0].min    = 36;
+    profiles.profile[0].alarm[0].sec    = 34;
+    
+    profiles.profile[0].alarm[1].hour   = 11;
+    profiles.profile[0].alarm[1].min    = 12;
+    profiles.profile[0].alarm[1].sec    = 55;
+    Profile_STORE(&profiles);
+    */
+    //////////////////////////////////////////////////////////////////////////
+     
+    
     while (1) 
     {
         button_Pressed = button_Get(&previous);
@@ -96,12 +107,12 @@ int main(void)
             // check if the current mode is time or feed
             // displayOnScreen(t) or dispOnScreen(feedMode)
                     
-            profile_Selected = profiles.profile[profile_Number]; // selected profile
+            profile_Selected = &profiles.profile[profile_Number]; // selected profile
             Profile_STORE(&profiles);   // Stores profiles in EEPROM
             change_Flag = 0;
         }
         // Used to display the correct clock/feed selection
-        display_Selection(clock_Current, mode, profile_Selected, t, colon_Status);
+        display_Selection(clock_Current, mode, *profile_Selected, t, colon_Status);
         
         // Tracks the time using the uC internal Oscillator, but fetches the RTC time once a minute for accuracy   
         if(cycle == (1000/DELAY_TIME - 1)){

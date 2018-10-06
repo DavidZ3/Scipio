@@ -11,6 +11,19 @@
 #include "display.h"	// Used to control the 7-seg LED display
 #include "rtc.h"		// Used for the Time datatype and RTC functions
 
+// Used to convert the DEC time values to HEX before storing to the RTC
+void toRTC(Time* t){
+    t->hour = L_DEC2HEX(t->hour);
+    t->min  = L_DEC2HEX(t->min);
+    t->sec  = L_DEC2HEX(t->sec);
+}
+
+// Used to convert the HEX time values to DEC when reading from the RTC
+void fromRTC(Time* t){
+    t->hour = L_HEX2DEC(t->hour);
+    t->min  = L_HEX2DEC(t->min);
+    t->sec  = L_HEX2DEC(t->sec);
+}
 
 void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Selected, Time t, uint8_t colon_Status){
     
@@ -83,9 +96,7 @@ void internal_Clock_Increment(Time* t){
     if(t->sec == 50){
         RTC_GetTime(&t->hour, &t->min, &t->sec);  
         // Reads hex as dec as the RTC returns time in hex e.g. 45 min is 0x45
-        t->hour = HEX2DEC(t->hour);
-        t->min  = HEX2DEC(t->min);
-        t->sec  = HEX2DEC(t->sec);
+        fromRTC(&t);
     }
 }
 

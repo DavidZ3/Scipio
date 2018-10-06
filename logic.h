@@ -18,10 +18,10 @@
 
 /**************************** Macros ***************************************/
 // Reads hex as dec without converting bases
-#define HEX2DEC(X) (((X)/0x10)*10  + (X)%0x10)
+#define L_HEX2DEC(X) (((X)/0x10)*10  + (X)%0x10)
 
 // Reads dec as hex without converting bases
-#define DEC2HEX(X) (((X)/10)*0x10  + (X)%10)
+#define L_DEC2HEX(X) (((X)/10)*0x10  + (X)%10)
 /***************************************************************************/
 
 /**************************** Macros ***************************************/
@@ -31,6 +31,8 @@
 
 
 /**************************** Functions ************************************/
+void toRTC(Time* t);
+void fromRTC(Time* t);
 void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Selected, Time t, uint8_t colon_Status);
 void internal_Clock_Increment(Time* t);
 /***************************************************************************/
