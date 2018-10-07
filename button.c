@@ -19,21 +19,59 @@
 // Bit 5:   Set_Feed
 // Bit 6:   Manual Dispense
 // Bit 7:   None
+
+// Rewrite button_Get to factor to get level triggering on the Up/Down/Manual_Dispense buttons
 Buttons button_Get(uint8_t* previous)
 {
     // Reads the buttons for positive edge triggering
     for(int port_Num = 0; port_Num < NUM_OF_INPUTS; port_Num++)
 	{
         // If an button is just pressed (rising edge), then return the button pressed
-        if(((PINB & (0b1 << port_Num)) != 0) && 
-			((*previous & (0b1 << port_Num)) != 0))
-			{
-                *previous |= (0b1 << port_Num);
-                return (Buttons) port_Num;
-            }
+        if((PIND & (1 << port_Num))){
+            //*previous |= (1 << port_Num);
+            return (Buttons) port_Num;
+        //}else if((PIND & (1 << port_Num)) == 0){
+          //  *previous &= ~(1 << port_Num);      
+        }                
 	}
+    
+    // Logic for level triggering instead of rising-edge triggering
+    // this is used for continuous signals such as up/down/Manual_Dispense
+    if(PIND & (0b1 << Up)){
+        return Up;
+    }
+    if(PIND & (0b1 << Down)){
+        return Down;
+    }
+    if(PIND & (0b1 << Manual_Dispense)){
+        return Manual_Dispense;
+    }       
     return None;   // If no buttons have been pressed return NO_INPUTS
 }
+
+// Local functions to increase/decrease the time/feed
+void time_Up(Time* t){
+    // If min == 59, then reset min; else min++
+    if(t->min == 59){
+        t->min = 0;
+        // If hour = 23, then reset hour; else hour++
+        if(t->hour == 23){
+            t->hour = 0;
+        }else{
+            t->hour++;
+        }
+    }else{
+        t->min++;
+    }
+}
+
+void time_Down(Time* t){
+    //if(t->min == 0)
+}
+
+void feed_Up(uint8_t* feed);
+void feed_Down(uint8_t* feed);
+
 
 
 // NOTE: The *change_Flag is used to indicate when the profile needs to be changed or
@@ -41,7 +79,8 @@ Buttons button_Get(uint8_t* previous)
 void button_Action(
         Buttons button_Pressed, Profiles* profiles, 
         uint8_t* profile_Number, uint8_t* clock_Current,
-        uint8_t* change_Flag, uint8_t* mode)
+        uint8_t* change_Flag, uint8_t* mode,
+        uint8_t* feed_Cycles)
 {
 	// A if statement is not used to check if the button is None as
 	// a jump table directly solves this without the extra comparison
@@ -63,12 +102,13 @@ void button_Action(
                 (*profile_Number)++;
             }
             *change_Flag = 0;
+            PORTB |= 1;
             break;
         case Next_Clock:
 			// Do stuff
 			// next_Clock();
-            if(*clock_Current == ALARM_3){
-                *clock_Current = CLOCK;
+            if(*clock_Current == CLOCK){
+                *clock_Current = ALARM_1;
             }else{
                 (*clock_Current)++;
             }
@@ -85,12 +125,21 @@ void button_Action(
             *change_Flag = 1;
 			break;
 		case Up:
+            // Store the updated time during the falling edge to avoid excessive EEPROM writes
 			// Do stuff
-			// time_Up();
+            if(*mode == TIME_MODE){
+                // time_Up();
+            }else{
+                // feed_Up(); 
+            }
 			break;
 		case Down:
 			// Do stuff
-			// time_Down();
+            if(*mode == TIME_MODE){
+                // time_Down();
+            }else{
+                // feed_Down();
+            }
 			break;
 		case Set_Feed:
 			// Do stuff
@@ -104,6 +153,8 @@ void button_Action(
 			break;
         case Manual_Dispense:
             // Dispense while the button is held down
+            (*feed_Cycles)++;
+            *change_Flag = 0;
             break;
 		case None:
 			// Do nothing

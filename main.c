@@ -9,6 +9,7 @@
 
 #define     F_CPU       1000000UL
 #define     DELAY_TIME  200     // Sets the pause period (ms)
+#define     SPEED       1       // Increases the system operation speed (default speed is 1)
 
 // AVR I/O Library
 #include    <avr/io.h>
@@ -40,18 +41,17 @@ int main(void)
     Profile_LOAD(&profiles);
     
     Time t;     // Typedef in rtc.h
-    t.hour  = 0;
-    t.min   = 0;
-    t.sec   = 0;
+    //t.hour  = 0x15;
+    //t.min   = 0x37;
+    //t.sec   = 0x40;
     
     // Sets the RTC Time
-    toRTC(&t);      // Read time values as HEX before storing to the RTC
-    RTC_SetTime(t.hour, t.min, t.sec);
-    fromRTC(&t);    // Change back to DEC as time is stored in base 10 in this program
+    //RTC_SetTime(t.hour, t.min, t.sec);
+    //fromRTC(&t);    // Change back to DEC as time is stored in base 10 in this program
     
     // Loads RTC Time
-    //RTC_GetTime(&t.hour, &t.min, &t.sec);
-    //fromRTC(&t);
+    RTC_GetTime(&t.hour, &t.min, &t.sec);
+    fromRTC(&t);
 
     // Start with no buttons pressed before reading in button inputs
     uint8_t previous = 0;   // Stores the previous state of the buttons for positive edge triggering    
@@ -62,7 +62,7 @@ int main(void)
     Profile* profile_Selected = &profiles.profile[profile_Number];
     
     // Sets initial clock/alarm displayed as CLOCK  
-    uint8_t clock_Current = ALARM_1;
+    uint8_t clock_Current = CLOCK;
     
     // Sets the initial mode in TIME_MODE instead of FEED_MODE
     uint8_t mode = TIME_MODE;
@@ -80,8 +80,11 @@ int main(void)
     // Used to control the colon blink
     uint8_t colon_Status = 0;
     
+    // Used to control the amount of feed cycles left
+    uint8_t feed_Cycles = 0;
+    
     // Test Code /////////////////////////////////////////////////////////////
-    /*
+    
     profiles.profile[0].alarm[0].hour   = 05;
     profiles.profile[0].alarm[0].min    = 36;
     profiles.profile[0].alarm[0].sec    = 34;
@@ -90,24 +93,28 @@ int main(void)
     profiles.profile[0].alarm[1].min    = 12;
     profiles.profile[0].alarm[1].sec    = 55;
     Profile_STORE(&profiles);
-    */
+    
     //////////////////////////////////////////////////////////////////////////
      
     
     while (1) 
     {
+        /*
+        if(PIND & 1){
+            PORTB = 1;
+        }else{
+            PORTB = 0;
+        }
+        */
         button_Pressed = button_Get(&previous);
         button_Action(button_Pressed, &profiles, &profile_Number,
-                &clock_Current, &change_Flag, &mode);
+                &clock_Current, &change_Flag, &mode, &feed_Cycles);
+        
+        // Updates profile
+        profile_Selected = &profiles.profile[profile_Number]; // selected profile
         
         // See if button_Action has done anything
         if(change_Flag == 1){
-            // Do stuff
-            // check for set alarms (if set start blinking)
-            // check if the current mode is time or feed
-            // displayOnScreen(t) or dispOnScreen(feedMode)
-                    
-            profile_Selected = &profiles.profile[profile_Number]; // selected profile
             Profile_STORE(&profiles);   // Stores profiles in EEPROM
             change_Flag = 0;
         }
@@ -119,15 +126,24 @@ int main(void)
             // Toggles the colon blink status once a second
             colon_Status ^= 1;
             // Increment t.sec once a second            
-            internal_Clock_Increment(&t);        
+            internal_Clock_Increment(&t, &feed_Status);        
             cycle = 0;
         }else{
             cycle++;
         }
 
+
 		// Check if the current times match active alarm times; feed if it does
+        if(feed_Status == 0){
+            alarm_Check(*profile_Selected, t, &feed_Status, &feed_Cycles);
+        }        
+        if(feed_Cycles > 0){
+            // oneFeedRev();
+            feed_Cycles--;
+        }
+
 		// Check if there are button inputs
-        DELAY_ms(DELAY_TIME); // Wait DELAY_TIME milliseconds after each loop cycle 
+        DELAY_ms(DELAY_TIME/SPEED); // Wait DELAY_TIME milliseconds after each loop cycle 
    }
     return 0;
 }

@@ -12,6 +12,11 @@
 #include "eeprom.h"     // Used for non-dynamic memory access
 #include "profile.h"    // Used for the profile datatypes
 
+/**************************** Control* ************************************/
+#define RTC_STATUS  1   // Define as 1 to use RTC
+/***************************************************************************/
+
+
 /**************************** Constants ************************************/
 
 /***************************************************************************/
@@ -34,7 +39,9 @@
 void toRTC(Time* t);
 void fromRTC(Time* t);
 void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Selected, Time t, uint8_t colon_Status);
-void internal_Clock_Increment(Time* t);
+void internal_Clock_Increment(Time* t, uint8_t* feed_Status);
+uint8_t time_Equal(Time t1, Time t2);
+void alarm_Check(Profile profile_Selected, Time t, uint8_t* feed_Status, uint8_t* feed_Cycles);
 /***************************************************************************/
 
 #endif

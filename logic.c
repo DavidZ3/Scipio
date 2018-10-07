@@ -64,16 +64,18 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
             }
             break;
         case CLOCK:
-            disp_Set(t.min, t.sec); // displays the time
+            disp_Set(t.hour, t.min); // displays the time
             disp_Blink(colon_Status);
             break;
     }
 }
 
-void internal_Clock_Increment(Time* t){    
+void internal_Clock_Increment(Time* t, uint8_t* feed_Status){    
     // If sec = 59, reset sec and min++; else sec++
     if(t->sec == 59){
         t->sec = 0;
+        // Once a minute reset feed status
+        *feed_Status = 0;
         // If min = 59, reset min and hour++; else min++
         if(t->min == 59){
             t->min = 0;           
@@ -91,12 +93,12 @@ void internal_Clock_Increment(Time* t){
         (t->sec)++;
     }    
      
-    // Gets time from RTC once a minute at the 50sec mark to ensure the time
+    // Gets time from RTC once a minute at the 45sec mark to ensure the time
     // is relatively accurate at each minute
-    if(t->sec == 50){
-        RTC_GetTime(&t->hour, &t->min, &t->sec);  
+    if(RTC_STATUS && t->sec == 45){
+        RTC_GetTime(&t->hour, &t->min, &t->sec);
         // Reads hex as dec as the RTC returns time in hex e.g. 45 min is 0x45
-        fromRTC(&t);
+        fromRTC(t);
     }
 }
 
@@ -112,15 +114,18 @@ uint8_t time_Equal(Time t1, Time t2){
     return 1;
 }
 
-void alarm_Check(Profile profile_Selected, Time t){
+void alarm_Check(Profile profile_Selected, Time t, uint8_t* feed_Status, uint8_t* feed_Cycles){
     for(uint8_t index = ALARM_1; index < NUM_OF_ALARMS; index++){
         // Check if the current alarm is armed
         if(profile_Selected.alarmStatus[index] == ARMED){
             // If the armed alarm's time matches the current time 
             if(time_Equal(profile_Selected.alarm[index], t)){
-                // Might need to add some sort of tracking variable to prevent
-                // feed cycle triggering more than once. e.g FeedStatus
-                // dispenseFood(); 
+                // If the amount to dispense is not equal to zero
+                if(profile_Selected.feed[index] != 0){
+                    *feed_Status = 1;   // Indicates that an alarm has been triggered this minute
+                    *feed_Cycles = profile_Selected.feed[index];
+                    return;
+                }
             }
         }
     } 

@@ -12,7 +12,9 @@
 void port_Init()
 {
     DDRD &= ~(0b1111111);   // Sets PORT_D(0-6) as inputs
-    PORTD |= 0b1111111;     // Sets PORT_D(0-6) as pull-up resistor inputs
+    //DDRD = 0;       // sets all pins on PORTD to inputs
+    
+    //PORTD |= 0b1111111;     // Sets PORT_D(0-6) as pull-up resistor inputs
     
     DDRB |= 0b000011;       // Sets PORT_B(0-1) as 2 inputs to a 2:4 DeMUX to control the profile LEDs
     DDRB |= 0b001100;       // Sets PORT_B(2-3) as 2 inputs to a bi-direction motor driver IC
