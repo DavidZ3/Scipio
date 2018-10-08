@@ -25,6 +25,10 @@
 #include    "delay.h"
 #include    "rtc.h"
 
+// Debugging Settings
+#define     SET_TIMER       0
+#define     SET_PROFILE     1
+
 int main(void)
 {
     // Initialises the Inputs and Outputs
@@ -48,21 +52,27 @@ int main(void)
     Profile_LOAD(&profiles);
     
     Time t;     // Typedef in rtc.h
-    //t.hour  = 0x15;
-    //t.min   = 0x37;
-    //t.sec   = 0x40;
+
+    // Sets and initial time if SET_TIMER is true
+#if SET_TIMER
+    t.hour  = 0x15;
+    t.min   = 0x37;
+    t.sec   = 0x40;
     
     // Sets the RTC Time
-    //RTC_SetTime(t.hour, t.min, t.sec);
-    //fromRTC(&t);    // Change back to DEC as time is stored in base 10 in this program
+    RTC_SetTime(t.hour, t.min, t.sec);
+    fromRTC(&t);    // Change back to DEC as time is stored in base 10 in this program
+#endif
     
     // Loads RTC Time
     RTC_GetTime(&t.hour, &t.min, &t.sec);
     fromRTC(&t);
 
     // Start with no buttons pressed before reading in button inputs
-    uint8_t previous = 0;   // Stores the previous state of the buttons for positive edge triggering    
     Buttons button_Pressed = None;
+    
+    // Stores the previous state of the buttons for positive edge triggering    
+    uint8_t previous = 0;   
     
     // Set initial profile as profile 1
     uint8_t profile_Number = PROFILE_1;
@@ -80,18 +90,18 @@ int main(void)
     // Used to track feeding for the alarm(s)
     uint8_t feed_Status = 0;
     
-    // Used to provide a 1 second delay 
-    uint8_t cycle = 0;  // Used to perform certain actions once a second regardless of the actual delay
-                        // assuming the delay is < 1sec and is a factor of 1 sec
-    
+    // Used to perform certain actions once a second regardless of the actual delay
+    // assuming the delay is < 1sec and is a factor of 1 sec
+    uint8_t cycle = 0;      
+
     // Used to control the colon blink
     uint8_t colon_Status = 0;
     
     // Used to control the amount of feed cycles left
     uint8_t feed_Cycles = 0;
     
-    // Test Code /////////////////////////////////////////////////////////////
-    
+#if SET_PROFILE
+    // Test Code for profiles /////////////////////////////////////////////////
     profiles.profile[0].alarm[0].hour   = 05;
     profiles.profile[0].alarm[0].min    = 36;
     profiles.profile[0].alarm[0].sec    = 34;
@@ -100,20 +110,16 @@ int main(void)
     profiles.profile[0].alarm[1].min    = 12;
     profiles.profile[0].alarm[1].sec    = 55;
     Profile_STORE(&profiles);
-    
     //////////////////////////////////////////////////////////////////////////
+#endif
     
     
     while (1) 
     {
-        /*
-        if(PIND & 1){
-            PORTB = 1;
-        }else{
-            PORTB = 0;
-        }
-        */
+        // Gets the button pressed
         button_Pressed = button_Get(&previous);
+
+        // Determines the uC action based on the button pressed
         button_Action(button_Pressed, &profiles, &profile_Number,
                 &clock_Current, &change_Flag, &mode, &feed_Cycles, &t);
         
@@ -128,7 +134,8 @@ int main(void)
         // Used to display the correct clock/feed selection
         display_Selection(clock_Current, mode, *profile_Selected, t, colon_Status);
         
-        // Tracks the time using the uC internal Oscillator, but fetches the RTC time once a minute for accuracy   
+        // Tracks the time using the uC internal Oscillator, but fetches the RTC time once a 
+        // minute for accuracy   
         if(cycle == (1000/DELAY_TIME - 1)){
             // Toggles the colon blink status once a second
             colon_Status ^= 1;
@@ -138,7 +145,6 @@ int main(void)
         }else{
             cycle++;
         }
-
 
 		// Check if the current times match active alarm times; feed if it does
         if(feed_Status == 0){

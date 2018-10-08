@@ -25,6 +25,8 @@ void fromRTC(Time* t){
     t->sec  = L_HEX2DEC(t->sec);
 }
 
+
+
 void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Selected, Time t, uint8_t colon_Status){
     
     // Toggles the colon blink status once a second
@@ -36,7 +38,8 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
         // TODO: Write a blink function for the alarms and make sure to have the other alarms as off when the profile is switched
         case ALARM_1:
             if(mode == TIME_MODE){
-                disp_Set(profile_Selected.alarm[ALARM_1].hour, profile_Selected.alarm[ALARM_1].min);    // displays alarm 1
+                disp_Set(profile_Selected.alarm[ALARM_1].hour, 
+                        profile_Selected.alarm[ALARM_1].min);    // displays alarm 1
                 disp_Blink(1);
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_1]);
@@ -48,7 +51,8 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
             break;
         case ALARM_2:
             if(mode == TIME_MODE){
-                disp_Set(profile_Selected.alarm[ALARM_2].hour, profile_Selected.alarm[ALARM_2].min);    // displays alarm 2
+                disp_Set(profile_Selected.alarm[ALARM_2].hour, 
+                        profile_Selected.alarm[ALARM_2].min);    // displays alarm 2
                 disp_Blink(1);
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_2]);
@@ -60,7 +64,8 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
             break;
         case ALARM_3:
             if(mode == TIME_MODE){
-                disp_Set(profile_Selected.alarm[ALARM_3].hour, profile_Selected.alarm[ALARM_3].min);    // displays alarm 3
+                disp_Set(profile_Selected.alarm[ALARM_3].hour, 
+                        profile_Selected.alarm[ALARM_3].min);    // displays alarm 3
                 disp_Blink(1);
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_3]);
@@ -129,7 +134,8 @@ void alarm_Check(Profile profile_Selected, Time t, uint8_t* feed_Status, uint8_t
             if(time_Equal(profile_Selected.alarm[index], t)){
                 // If the amount to dispense is not equal to zero
                 if(profile_Selected.feed[index] != 0){
-                    *feed_Status = 1;   // Indicates that an alarm has been triggered this minute
+                    // Indicates that an alarm has been triggered this minute
+                    *feed_Status = 1;   
                     *feed_Cycles = profile_Selected.feed[index];
                     return;
                 }
