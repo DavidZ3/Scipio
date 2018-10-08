@@ -149,7 +149,7 @@ void button_Action(
             // Store the updated time during the falling edge to avoid excessive EEPROM writes
 			// Do stuff
             if(*mode == TIME_MODE){
-                if(clock_Current == CLOCK){
+                if(*clock_Current == CLOCK){
                     time_Up(t);
                 }else{
                     time_Up(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
@@ -161,7 +161,7 @@ void button_Action(
 		case Down:
 			// Do stuff
             if(*mode == TIME_MODE){
-                if(clock_Current == CLOCK){
+                if(*clock_Current == CLOCK){
                     time_Down(t);
                 }else{
                     time_Down(&(profiles->profile[*profile_Number].alarm[*clock_Current]));

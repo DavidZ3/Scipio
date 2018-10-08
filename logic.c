@@ -40,6 +40,7 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
                 disp_Blink(1);
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_1]);
+                disp_Blink(0);
             }
             if(profile_Selected.alarmStatus[ALARM_1]){
                 // blink Alarm1 led
@@ -51,6 +52,7 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
                 disp_Blink(1);
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_2]);
+                disp_Blink(0);
             }
             if(profile_Selected.alarmStatus[ALARM_2]){
                 // blink Alarm2 led
@@ -62,6 +64,7 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
                 disp_Blink(1);
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_3]);
+                disp_Blink(0);
             }
             if(profile_Selected.alarmStatus[ALARM_3]){
                 // blink Alarm3 led
