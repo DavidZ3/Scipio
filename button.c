@@ -1,7 +1,7 @@
 /******************************************************************************
     File:   button.c
     Author: David Zhou
-    Functions used to detect the button(s) pressed and perform funtions based
+    Functions used to detect the button(s) pressed and perform functions based
 	on the buttons pressed.
 ******************************************************************************/
 
@@ -66,11 +66,32 @@ void time_Up(Time* t){
 }
 
 void time_Down(Time* t){
-    //if(t->min == 0)
+    // If min is zero, then set to 59; else min--
+    if(t->min == 0){
+        t->min = 59;
+        //If hour is zero, then set to 23; else hour--
+        if(t->hour == 0){
+            t->hour = 23;
+        }else{
+            t->hour--;
+        }
+    }else{
+        t->min--;
+    }
 }
 
-void feed_Up(uint8_t* feed);
-void feed_Down(uint8_t* feed);
+
+
+void feed_Up(uint8_t* feed){
+    if(*feed < 99){
+        (*feed)++;
+    }
+}
+void feed_Down(uint8_t* feed){
+    if(*feed > 0){
+        (*feed)--;
+    }
+}
 
 
 
@@ -80,7 +101,7 @@ void button_Action(
         Buttons button_Pressed, Profiles* profiles, 
         uint8_t* profile_Number, uint8_t* clock_Current,
         uint8_t* change_Flag, uint8_t* mode,
-        uint8_t* feed_Cycles)
+        uint8_t* feed_Cycles, Time* t)
 {
 	// A if statement is not used to check if the button is None as
 	// a jump table directly solves this without the extra comparison
@@ -128,17 +149,25 @@ void button_Action(
             // Store the updated time during the falling edge to avoid excessive EEPROM writes
 			// Do stuff
             if(*mode == TIME_MODE){
-                // time_Up();
+                if(clock_Current == CLOCK){
+                    time_Up(t);
+                }else{
+                    time_Up(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
+                }
             }else{
-                // feed_Up(); 
+                    feed_Up(feed_Cycles);
             }
 			break;
 		case Down:
 			// Do stuff
             if(*mode == TIME_MODE){
-                // time_Down();
+                if(clock_Current == CLOCK){
+                    time_Down(t);
+                }else{
+                    time_Down(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
+                }
             }else{
-                // feed_Down();
+                feed_Down(feed_Cycles);
             }
 			break;
 		case Set_Feed:

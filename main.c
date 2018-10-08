@@ -37,7 +37,14 @@ int main(void)
     // Declares profiles and load EEPROM into &profiles
     // The reset will no longer be used later
     Profiles profiles;
-    //Profile_RESET();    // The reset is used to set all profiles to the zero profile
+    
+    // If Next_Profile and Set_Alarm and Down are held down 
+    // when the uC is being powered on then enter reset mode
+    if(PIND == 0b10101){
+        Profile_RESET();    // The reset is used to set all profiles to the zero profile
+        RTC_SetTime(0x00, 0x00, 0x00);
+    }
+    
     Profile_LOAD(&profiles);
     
     Time t;     // Typedef in rtc.h
@@ -95,7 +102,7 @@ int main(void)
     Profile_STORE(&profiles);
     
     //////////////////////////////////////////////////////////////////////////
-     
+    
     
     while (1) 
     {
@@ -108,7 +115,7 @@ int main(void)
         */
         button_Pressed = button_Get(&previous);
         button_Action(button_Pressed, &profiles, &profile_Number,
-                &clock_Current, &change_Flag, &mode, &feed_Cycles);
+                &clock_Current, &change_Flag, &mode, &feed_Cycles, &t);
         
         // Updates profile
         profile_Selected = &profiles.profile[profile_Number]; // selected profile

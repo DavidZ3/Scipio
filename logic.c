@@ -28,7 +28,8 @@ void fromRTC(Time* t){
 void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Selected, Time t, uint8_t colon_Status){
     
     // Toggles the colon blink status once a second
-
+    // Uses a static colon for alarm times and
+    // no colon for feed settings
     
     switch(clock_Current)
     {
@@ -36,6 +37,7 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
         case ALARM_1:
             if(mode == TIME_MODE){
                 disp_Set(profile_Selected.alarm[ALARM_1].hour, profile_Selected.alarm[ALARM_1].min);    // displays alarm 1
+                disp_Blink(1);
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_1]);
             }
@@ -46,6 +48,7 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
         case ALARM_2:
             if(mode == TIME_MODE){
                 disp_Set(profile_Selected.alarm[ALARM_2].hour, profile_Selected.alarm[ALARM_2].min);    // displays alarm 2
+                disp_Blink(1);
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_2]);
             }
@@ -56,6 +59,7 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
         case ALARM_3:
             if(mode == TIME_MODE){
                 disp_Set(profile_Selected.alarm[ALARM_3].hour, profile_Selected.alarm[ALARM_3].min);    // displays alarm 3
+                disp_Blink(1);
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_3]);
             }
