@@ -26,7 +26,7 @@
 #include    "rtc.h"
 
 // Debugging Settings
-#define     SET_TIMER       1
+#define     SET_TIMER       0
 #define     SET_PROFILE     1
 
 int main(void)
@@ -44,9 +44,38 @@ int main(void)
     
     // If Next_Profile and Set_Alarm and Down are held down 
     // when the uC is being powered on then enter reset mode
-    if(PIND == 0b10101){
+    if(PIND == 0b10000000){
         Profile_RESET();    // The reset is used to set all profiles to the zero profile
         RTC_SetTime(0x00, 0x00, 0x00);
+        
+        #if SET_PROFILE
+        // Test Code for profiles /////////////////////////////////////////////////
+        profiles.profile[0].alarm[0].hour   = 11;
+        profiles.profile[0].alarm[0].min    = 11;
+        profiles.profile[0].alarm[1].hour   = 12;
+        profiles.profile[0].alarm[1].min    = 12;
+        profiles.profile[0].alarm[2].hour   = 13;
+        profiles.profile[0].alarm[2].min    = 13;
+        
+        
+        profiles.profile[1].alarm[0].hour   = 21;
+        profiles.profile[1].alarm[0].min    = 21;
+        profiles.profile[1].alarm[1].hour   = 22;
+        profiles.profile[1].alarm[1].min    = 22;
+        profiles.profile[1].alarm[2].hour   = 23;
+        profiles.profile[1].alarm[2].min    = 23;
+
+        profiles.profile[2].alarm[0].hour   = 31;
+        profiles.profile[2].alarm[0].min    = 31;
+        profiles.profile[2].alarm[1].hour   = 32;
+        profiles.profile[2].alarm[1].min    = 32;
+        profiles.profile[2].alarm[2].hour   = 33;
+        profiles.profile[2].alarm[2].min    = 33;
+        
+        Profile_STORE(&profiles);
+        //////////////////////////////////////////////////////////////////////////
+        #endif
+        
     }
     
     Profile_LOAD(&profiles);
@@ -106,34 +135,6 @@ int main(void)
     // Used to decrement the time by 5 after 5 presses
     uint8_t down_Count = 0;
     
-#if SET_PROFILE
-    // Test Code for profiles /////////////////////////////////////////////////
-    profiles.profile[0].alarm[0].hour   = 11;
-    profiles.profile[0].alarm[0].min    = 11;
-    profiles.profile[0].alarm[1].hour   = 12;
-    profiles.profile[0].alarm[1].min    = 12;
-    profiles.profile[0].alarm[2].hour   = 13;
-    profiles.profile[0].alarm[2].min    = 13;
-    
-    
-    profiles.profile[1].alarm[0].hour   = 21;
-    profiles.profile[1].alarm[0].min    = 21;
-    profiles.profile[1].alarm[1].hour   = 22;
-    profiles.profile[1].alarm[1].min    = 22;
-    profiles.profile[1].alarm[2].hour   = 23;
-    profiles.profile[1].alarm[2].min    = 23;
-
-    profiles.profile[2].alarm[0].hour   = 31;
-    profiles.profile[2].alarm[0].min    = 31;
-    profiles.profile[2].alarm[1].hour   = 32;
-    profiles.profile[2].alarm[1].min    = 32;
-    profiles.profile[2].alarm[2].hour   = 33;
-    profiles.profile[2].alarm[2].min    = 33;
-            
-    Profile_STORE(&profiles);
-    //////////////////////////////////////////////////////////////////////////
-#endif
-    
     
     while (1) 
     {
@@ -153,6 +154,7 @@ int main(void)
         button_Action(button_Pressed, &profiles, &profile_Number,
                 &clock_Current, &change_Flag, &mode, &feed_Cycles, &t,
                 &up_Count, &down_Count);
+        
         
         // Updates profile
         profile_Selected = &profiles.profile[profile_Number]; // selected profile

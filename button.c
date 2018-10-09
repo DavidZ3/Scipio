@@ -161,7 +161,7 @@ void button_Action(
                         time_Up(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
                     }
                 }else{
-                        feed_Up(feed_Cycles);
+                        feed_Up(&(profiles->profile[*profile_Number].feed[*clock_Current]));
                 }
                 (*up_Count)++;
             }else{
@@ -173,7 +173,7 @@ void button_Action(
                             time_Up(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
                         }
                         }else{
-                        feed_Up(feed_Cycles);
+                        feed_Up(&(profiles->profile[*profile_Number].feed[*clock_Current]));
                     }
                 }
                 if(*clock_Current == CLOCK){
@@ -181,7 +181,8 @@ void button_Action(
                     RTC_SetTime(t->hour,t->min,t->sec);
                     fromRTC(t);
                 }                    
-            }                        
+            }
+            *change_Flag = 1;                       
 			break;
 		case Down:
 			// Do stuff
@@ -196,7 +197,7 @@ void button_Action(
                         time_Down(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
                     }
                 }else{
-                    feed_Down(feed_Cycles);
+                    feed_Down(&(profiles->profile[*profile_Number].feed[*clock_Current]));
                 }
                 (*down_Count)++;
             }else{
@@ -208,7 +209,7 @@ void button_Action(
                             time_Down(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
                         }
                         }else{
-                        feed_Down(feed_Cycles);
+                        feed_Down(&(profiles->profile[*profile_Number].feed[*clock_Current]));
                     }
                 }
                 if(*clock_Current == CLOCK){
@@ -216,7 +217,8 @@ void button_Action(
                     RTC_SetTime(t->hour,t->min,t->sec);
                     fromRTC(t);
                 }   
-            }                                
+            }
+            *change_Flag = 1;                
 			break;
 		case Set_Feed:
 			// Do stuff

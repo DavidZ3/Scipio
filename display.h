@@ -51,6 +51,7 @@ void disp_Stop(void);
 void disp_Cursor(uint8_t position);
 void disp_Cusor_Digit(uint8_t position, uint8_t digit);
 void disp_Clear(void);
+void disp_Set_Decimal(uint8_t decimal_Byte);
 void disp_Blink(uint8_t colon_Status);
 void disp_Set(uint8_t hour, uint8_t min);
 /***************************************************************************/

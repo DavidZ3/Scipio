@@ -40,39 +40,42 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
             if(mode == TIME_MODE){
                 disp_Set(profile_Selected.alarm[ALARM_1].hour, 
                         profile_Selected.alarm[ALARM_1].min);    // displays alarm 1
-                disp_Blink(1);
+                if(profile_Selected.alarmStatus[ALARM_1]){
+                    disp_Set_Decimal(COLON | 1<<3);
+                }else{
+                    disp_Set_Decimal(COLON);
+                }
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_1]);
                 disp_Blink(0);
-            }
-            if(profile_Selected.alarmStatus[ALARM_1]){
-                // blink Alarm1 led
             }
             break;
         case ALARM_2:
             if(mode == TIME_MODE){
                 disp_Set(profile_Selected.alarm[ALARM_2].hour, 
                         profile_Selected.alarm[ALARM_2].min);    // displays alarm 2
-                disp_Blink(1);
+            if(profile_Selected.alarmStatus[ALARM_2]){
+                disp_Set_Decimal(COLON | 1<<3);
+            }else{
+                disp_Set_Decimal(COLON);
+            }
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_2]);
                 disp_Blink(0);
-            }
-            if(profile_Selected.alarmStatus[ALARM_2]){
-                // blink Alarm2 led
             }
             break;
         case ALARM_3:
             if(mode == TIME_MODE){
                 disp_Set(profile_Selected.alarm[ALARM_3].hour, 
                         profile_Selected.alarm[ALARM_3].min);    // displays alarm 3
-                disp_Blink(1);
+            if(profile_Selected.alarmStatus[ALARM_3]){
+                disp_Set_Decimal(COLON | 1<<3);
+            }else{
+                disp_Set_Decimal(COLON);
+            }
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_3]);
                 disp_Blink(0);
-            }
-            if(profile_Selected.alarmStatus[ALARM_3]){
-                // blink Alarm3 led
             }
             break;
         case CLOCK:

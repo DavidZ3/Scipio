@@ -45,6 +45,13 @@ void disp_Clear(void)
     I2C_Write(CLEAR_DISPLAY);   // Clear display command, and resets the cursor    
 }
 
+void disp_Set_Decimal(uint8_t decimal_Byte){
+    disp_Init();
+    I2C_Write(DECIMAL_CONTROL);
+    I2C_Write(decimal_Byte);
+    disp_Stop();
+}
+
 void disp_Blink(uint8_t colon_Status){    
     disp_Init();
     
