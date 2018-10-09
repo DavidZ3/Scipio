@@ -26,7 +26,7 @@
 #include    "rtc.h"
 
 // Debugging Settings
-#define     SET_TIMER       0
+#define     SET_TIMER       1
 #define     SET_PROFILE     1
 
 int main(void)
@@ -55,9 +55,9 @@ int main(void)
 
     // Sets and initial time if SET_TIMER is true
 #if SET_TIMER
-    t.hour  = 0x15;
-    t.min   = 0x37;
-    t.sec   = 0x40;
+    t.hour  = 0x12;
+    t.min   = 0x34;
+    t.sec   = 0x00;
     
     // Sets the RTC Time
     RTC_SetTime(t.hour, t.min, t.sec);
@@ -100,15 +100,36 @@ int main(void)
     // Used to control the amount of feed cycles left
     uint8_t feed_Cycles = 0;
     
+    // Used to increment the time by 5 after 5 presses
+    uint8_t up_Count = 0;
+    
+    // Used to decrement the time by 5 after 5 presses
+    uint8_t down_Count = 0;
+    
 #if SET_PROFILE
     // Test Code for profiles /////////////////////////////////////////////////
-    profiles.profile[0].alarm[0].hour   = 05;
-    profiles.profile[0].alarm[0].min    = 36;
-    profiles.profile[0].alarm[0].sec    = 34;
-    
-    profiles.profile[0].alarm[1].hour   = 11;
+    profiles.profile[0].alarm[0].hour   = 11;
+    profiles.profile[0].alarm[0].min    = 11;
+    profiles.profile[0].alarm[1].hour   = 12;
     profiles.profile[0].alarm[1].min    = 12;
-    profiles.profile[0].alarm[1].sec    = 55;
+    profiles.profile[0].alarm[2].hour   = 13;
+    profiles.profile[0].alarm[2].min    = 13;
+    
+    
+    profiles.profile[1].alarm[0].hour   = 21;
+    profiles.profile[1].alarm[0].min    = 21;
+    profiles.profile[1].alarm[1].hour   = 22;
+    profiles.profile[1].alarm[1].min    = 22;
+    profiles.profile[1].alarm[2].hour   = 23;
+    profiles.profile[1].alarm[2].min    = 23;
+
+    profiles.profile[2].alarm[0].hour   = 31;
+    profiles.profile[2].alarm[0].min    = 31;
+    profiles.profile[2].alarm[1].hour   = 32;
+    profiles.profile[2].alarm[1].min    = 32;
+    profiles.profile[2].alarm[2].hour   = 33;
+    profiles.profile[2].alarm[2].min    = 33;
+            
     Profile_STORE(&profiles);
     //////////////////////////////////////////////////////////////////////////
 #endif
@@ -118,10 +139,20 @@ int main(void)
     {
         // Gets the button pressed
         button_Pressed = button_Get(&previous);
+        
+        // Resets the up/down count it stops being pressed
+        if(button_Pressed != Up){
+            up_Count = 0;
+        }
+        if(button_Pressed != Down){
+            down_Count = 0;
+        }
+
 
         // Determines the uC action based on the button pressed
         button_Action(button_Pressed, &profiles, &profile_Number,
-                &clock_Current, &change_Flag, &mode, &feed_Cycles, &t);
+                &clock_Current, &change_Flag, &mode, &feed_Cycles, &t,
+                &up_Count, &down_Count);
         
         // Updates profile
         profile_Selected = &profiles.profile[profile_Number]; // selected profile
@@ -131,8 +162,13 @@ int main(void)
             Profile_STORE(&profiles);   // Stores profiles in EEPROM
             change_Flag = 0;
         }
+        
         // Used to display the correct clock/feed selection
         display_Selection(clock_Current, mode, *profile_Selected, t, colon_Status);
+        
+        // Selects the correct profile/clock_Number
+        profile_Number_LED(profile_Number);
+        clock_Current_LED(clock_Current);
         
         // Tracks the time using the uC internal Oscillator, but fetches the RTC time once a 
         // minute for accuracy   
@@ -154,7 +190,8 @@ int main(void)
             // oneFeedRev();
             feed_Cycles--;
         }
-
+        
+        
 		// Check if there are button inputs
         DELAY_ms(DELAY_TIME/SPEED); // Wait DELAY_TIME milliseconds after each loop cycle 
    }

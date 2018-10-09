@@ -90,7 +90,7 @@ void internal_Clock_Increment(Time* t, uint8_t* feed_Status){
         *feed_Status = 0;
         // If min = 59, reset min and hour++; else min++
         if(t->min == 59){
-            t->min = 0;           
+            t->min = 0;        
             // If hour = 23, reset hour; else hour++
             if(t->hour == 23){
                 t->hour = 0;
@@ -107,7 +107,7 @@ void internal_Clock_Increment(Time* t, uint8_t* feed_Status){
      
     // Gets time from RTC once a minute at the 45sec mark to ensure the time
     // is relatively accurate at each minute
-    if(RTC_STATUS && t->sec == 45){
+    if(RTC_STATUS && (t->sec == 45 || t->sec == 15 || t->sec == 30)){
         RTC_GetTime(&t->hour, &t->min, &t->sec);
         // Reads hex as dec as the RTC returns time in hex e.g. 45 min is 0x45
         fromRTC(t);

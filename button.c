@@ -6,8 +6,10 @@
 ******************************************************************************/
 
 #include <avr/io.h>
+#include "rtc.h"
 #include "button.h"
 #include "profile.h"    // Used for loading/writing profiles
+#include "logic.h"
 
 
 // Note: The the bits are used individually
@@ -101,7 +103,8 @@ void button_Action(
         Buttons button_Pressed, Profiles* profiles, 
         uint8_t* profile_Number, uint8_t* clock_Current,
         uint8_t* change_Flag, uint8_t* mode,
-        uint8_t* feed_Cycles, Time* t)
+        uint8_t* feed_Cycles, Time* t,
+        uint8_t* up_Count, uint8_t* down_Count)
 {
 	// A if statement is not used to check if the button is None as
 	// a jump table directly solves this without the extra comparison
@@ -116,14 +119,13 @@ void button_Action(
 		case Next_Profile:
 			// Do stuff
 			// next_Profile();
-            if(*profile_Number == 3){
-                *profile_Number = 2;
+            if(*profile_Number == PROFILE_3){
+                *profile_Number = PROFILE_1;
             }
             else{
                 (*profile_Number)++;
             }
             *change_Flag = 0;
-            PORTB |= 1;
             break;
         case Next_Clock:
 			// Do stuff
@@ -148,27 +150,73 @@ void button_Action(
 		case Up:
             // Store the updated time during the falling edge to avoid excessive EEPROM writes
 			// Do stuff
-            if(*mode == TIME_MODE){
-                if(*clock_Current == CLOCK){
-                    time_Up(t);
+            if(*up_Count < 5){
+                if(*mode == TIME_MODE){
+                    if(*clock_Current == CLOCK){
+                        time_Up(t);
+                        toRTC(t);
+                        RTC_SetTime(t->hour,t->min,t->sec);
+                        fromRTC(t);
+                    }else{
+                        time_Up(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
+                    }
                 }else{
-                    time_Up(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
+                        feed_Up(feed_Cycles);
                 }
+                (*up_Count)++;
             }else{
-                    feed_Up(feed_Cycles);
-            }
+                for(uint8_t loops = 0; loops <5; loops++){
+                    if(*mode == TIME_MODE){
+                        if(*clock_Current == CLOCK){
+                            time_Up(t);
+                            }else{
+                            time_Up(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
+                        }
+                        }else{
+                        feed_Up(feed_Cycles);
+                    }
+                }
+                if(*clock_Current == CLOCK){
+                    toRTC(t);
+                    RTC_SetTime(t->hour,t->min,t->sec);
+                    fromRTC(t);
+                }                    
+            }                        
 			break;
 		case Down:
 			// Do stuff
-            if(*mode == TIME_MODE){
-                if(*clock_Current == CLOCK){
-                    time_Down(t);
+            if(*down_Count < 5){
+                if(*mode == TIME_MODE){
+                    if(*clock_Current == CLOCK){
+                        time_Down(t);
+                        toRTC(t);
+                        RTC_SetTime(t->hour,t->min,t->sec);
+                        fromRTC(t);
+                    }else{
+                        time_Down(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
+                    }
                 }else{
-                    time_Down(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
+                    feed_Down(feed_Cycles);
                 }
+                (*down_Count)++;
             }else{
-                feed_Down(feed_Cycles);
-            }
+                for(uint8_t loops = 0; loops < 5; loops++){
+                    if(*mode == TIME_MODE){
+                        if(*clock_Current == CLOCK){
+                            time_Down(t);
+                            }else{
+                            time_Down(&(profiles->profile[*profile_Number].alarm[*clock_Current]));
+                        }
+                        }else{
+                        feed_Down(feed_Cycles);
+                    }
+                }
+                if(*clock_Current == CLOCK){
+                    toRTC(t);
+                    RTC_SetTime(t->hour,t->min,t->sec);
+                    fromRTC(t);
+                }   
+            }                                
 			break;
 		case Set_Feed:
 			// Do stuff
