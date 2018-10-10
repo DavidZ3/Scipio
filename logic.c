@@ -54,25 +54,26 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
             if(mode == TIME_MODE){
                 disp_Set(profile_Selected.alarm[ALARM_2].hour, 
                         profile_Selected.alarm[ALARM_2].min);    // displays alarm 2
-            if(profile_Selected.alarmStatus[ALARM_2]){
-                disp_Set_Decimal(COLON | 1<<3);
-            }else{
-                disp_Set_Decimal(COLON);
-            }
+                if(profile_Selected.alarmStatus[ALARM_2]){
+                    disp_Set_Decimal(COLON | 1<<3);
+                }else{
+                    disp_Set_Decimal(COLON);
+                }
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_2]);
                 disp_Blink(0);
             }
+
             break;
         case ALARM_3:
             if(mode == TIME_MODE){
                 disp_Set(profile_Selected.alarm[ALARM_3].hour, 
                         profile_Selected.alarm[ALARM_3].min);    // displays alarm 3
-            if(profile_Selected.alarmStatus[ALARM_3]){
-                disp_Set_Decimal(COLON | 1<<3);
-            }else{
-                disp_Set_Decimal(COLON);
-            }
+                if(profile_Selected.alarmStatus[ALARM_3]){
+                    disp_Set_Decimal(COLON | 1<<3);
+                }else{
+                    disp_Set_Decimal(COLON);
+                }
             }else{
                 disp_Set(00, profile_Selected.feed[ALARM_3]);
                 disp_Blink(0);
