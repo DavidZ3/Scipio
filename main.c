@@ -34,6 +34,10 @@ int main(void)
     // Initialises the Inputs and Outputs
     port_Init();
     
+    // Initialises the RTC
+    RTC_Init();
+    
+    
     // Sets the initial LEDs
     profile_Number_LED(PROFILE_1);
     clock_Current_LED(CLOCK);
@@ -71,6 +75,18 @@ int main(void)
         profiles.profile[2].alarm[1].min    = 32;
         profiles.profile[2].alarm[2].hour   = 33;
         profiles.profile[2].alarm[2].min    = 33;
+        
+        profiles.profile[0].feed[0]         = 11;
+        profiles.profile[0].feed[1]         = 12;
+        profiles.profile[0].feed[2]         = 13;
+        
+        profiles.profile[1].feed[0]         = 21;
+        profiles.profile[1].feed[1]         = 22;
+        profiles.profile[1].feed[2]         = 23;
+        
+        profiles.profile[2].feed[0]         = 31;
+        profiles.profile[2].feed[1]         = 32;
+        profiles.profile[2].feed[2]         = 33;
         
         Profile_STORE(&profiles);
         //////////////////////////////////////////////////////////////////////////
