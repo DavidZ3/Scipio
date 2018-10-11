@@ -130,7 +130,7 @@ uint8_t time_Equal(Time t1, Time t2){
     return 1;
 }
 
-void alarm_Check(Profile profile_Selected, Time t, uint8_t* feed_Status, uint8_t* feed_Cycles){
+void alarm_Check(Profile profile_Selected, Time t, uint8_t* feed_Status, int8_t* feed_Cycles){
     for(uint8_t index = ALARM_1; index < NUM_OF_ALARMS; index++){
         // Check if the current alarm is armed
         if(profile_Selected.alarmStatus[index] == ARMED){
@@ -140,7 +140,8 @@ void alarm_Check(Profile profile_Selected, Time t, uint8_t* feed_Status, uint8_t
                 if(profile_Selected.feed[index] != 0){
                     // Indicates that an alarm has been triggered this minute
                     *feed_Status = 1;   
-                    *feed_Cycles = profile_Selected.feed[index];
+                    // Sets feed cycles while ensuring the time spent feeding is independent of DELAY_TIME
+                    *feed_Cycles = profile_Selected.feed[index] * 200/DELAY_TIME;
                     return;
                 }
             }

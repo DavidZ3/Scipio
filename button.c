@@ -36,7 +36,7 @@ Buttons button_Get(uint8_t* previous)
           //  *previous &= ~(1 << port_Num);      
         }                
 	}
-    
+    /*
     // Logic for level triggering instead of rising-edge triggering
     // this is used for continuous signals such as up/down/Manual_Dispense
     if(PIND & (0b1 << Up)){
@@ -47,7 +47,8 @@ Buttons button_Get(uint8_t* previous)
     }
     if(PIND & (0b1 << Manual_Dispense)){
         return Manual_Dispense;
-    }       
+    }
+    */
     return None;   // If no buttons have been pressed return NO_INPUTS
 }
 
@@ -103,7 +104,7 @@ void button_Action(
         Buttons button_Pressed, Profiles* profiles, 
         uint8_t* profile_Number, uint8_t* clock_Current,
         uint8_t* change_Flag, uint8_t* mode,
-        uint8_t* feed_Cycles, Time* t,
+        int8_t* feed_Cycles, Time* t,
         uint8_t* up_Count, uint8_t* down_Count)
 {
 	// A if statement is not used to check if the button is None as
@@ -232,7 +233,7 @@ void button_Action(
 			break;
         case Manual_Dispense:
             // Dispense while the button is held down
-            (*feed_Cycles)++;
+            (*feed_Cycles) = 2;
             *change_Flag = 0;
             break;
 		case None:

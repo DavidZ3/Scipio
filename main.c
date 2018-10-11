@@ -7,10 +7,6 @@
 * Scipio system.
 *****************************************************************************/
 
-#define     F_CPU       1000000UL
-#define     DELAY_TIME  200     // Sets the pause period (ms)
-#define     SPEED       1       // Increases the system operation speed (default speed is 1)
-
 // AVR I/O Library
 #include    <avr/io.h>
 
@@ -50,44 +46,11 @@ int main(void)
     // when the uC is being powered on then enter reset mode
     if(PIND == 0b10000000){
         Profile_RESET();    // The reset is used to set all profiles to the zero profile
-        RTC_SetTime(0x00, 0x00, 0x00);
+        RTC_SetTime(0x11, 0x10, 0x45);
         
         #if SET_PROFILE
         // Test Code for profiles /////////////////////////////////////////////////
-        profiles.profile[0].alarm[0].hour   = 11;
-        profiles.profile[0].alarm[0].min    = 11;
-        profiles.profile[0].alarm[1].hour   = 12;
-        profiles.profile[0].alarm[1].min    = 12;
-        profiles.profile[0].alarm[2].hour   = 13;
-        profiles.profile[0].alarm[2].min    = 13;
-        
-        
-        profiles.profile[1].alarm[0].hour   = 21;
-        profiles.profile[1].alarm[0].min    = 21;
-        profiles.profile[1].alarm[1].hour   = 22;
-        profiles.profile[1].alarm[1].min    = 22;
-        profiles.profile[1].alarm[2].hour   = 23;
-        profiles.profile[1].alarm[2].min    = 23;
-
-        profiles.profile[2].alarm[0].hour   = 31;
-        profiles.profile[2].alarm[0].min    = 31;
-        profiles.profile[2].alarm[1].hour   = 32;
-        profiles.profile[2].alarm[1].min    = 32;
-        profiles.profile[2].alarm[2].hour   = 33;
-        profiles.profile[2].alarm[2].min    = 33;
-        
-        profiles.profile[0].feed[0]         = 11;
-        profiles.profile[0].feed[1]         = 12;
-        profiles.profile[0].feed[2]         = 13;
-        
-        profiles.profile[1].feed[0]         = 21;
-        profiles.profile[1].feed[1]         = 22;
-        profiles.profile[1].feed[2]         = 23;
-        
-        profiles.profile[2].feed[0]         = 31;
-        profiles.profile[2].feed[1]         = 32;
-        profiles.profile[2].feed[2]         = 33;
-        
+        Profile_Test_Values(&profiles);
         Profile_STORE(&profiles);
         //////////////////////////////////////////////////////////////////////////
         #endif
@@ -143,7 +106,7 @@ int main(void)
     uint8_t colon_Status = 0;
     
     // Used to control the amount of feed cycles left
-    uint8_t feed_Cycles = 0;
+    int8_t feed_Cycles = 0;
     
     // Used to increment the time by 5 after 5 presses
     uint8_t up_Count = 0;
@@ -154,6 +117,13 @@ int main(void)
     
     while (1) 
     {
+        // Turns off the motor at the start of each loop
+        if(feed_Cycles <= 0){
+            feed_Cycles = 0;
+            PORTB &= ~(0b1100);
+            //disp_Set(99,99);
+            DELAY_ms(500);
+        }        
         // Gets the button pressed
         button_Pressed = button_Get(&previous);
         
@@ -182,8 +152,11 @@ int main(void)
         }
         
         // Used to display the correct clock/feed selection
-        display_Selection(clock_Current, mode, *profile_Selected, t, colon_Status);
-        
+        // If feed_Cycles is not zero then display that instead later on.
+        if(feed_Cycles <= 0){
+            display_Selection(clock_Current, mode, *profile_Selected, t, colon_Status);
+        }
+                
         // Selects the correct profile/clock_Number
         profile_Number_LED(profile_Number);
         clock_Current_LED(clock_Current);
@@ -203,12 +176,18 @@ int main(void)
 		// Check if the current times match active alarm times; feed if it does
         if(feed_Status == 0){
             alarm_Check(*profile_Selected, t, &feed_Status, &feed_Cycles);
-        }        
+        }     
+           
         if(feed_Cycles > 0){
-            // oneFeedRev();
-            feed_Cycles--;
-        }
-        
+            // turns on motor
+            PORTB |= 0b1100;
+            
+            // display the cycles left
+            disp_Set(00, feed_Cycles*DELAY_TIME/200);
+            
+            // reduce cycles
+            feed_Cycles = feed_Cycles -1;
+        } 
         
 		// Check if there are button inputs
         DELAY_ms(DELAY_TIME/SPEED); // Wait DELAY_TIME milliseconds after each loop cycle 

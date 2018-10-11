@@ -19,7 +19,7 @@ void port_Init()
     DDRB |= 0b001100;       // Sets PORT_B(2-3) as 2 inputs to a bi-direction motor driver IC
     DDRB |= 0b110000;       // Sets PORT_B(4-5) as 2 inputs to a 2:4 DeMUX to control the clock/alarm LEDs
     
-    PORTB &= ~(0b110011);   // Sets the outputs as off
+    PORTB &= ~(0b111111);   // Sets the outputs as off
 }
 
 void profile_Number_LED(uint8_t profile_Number){
