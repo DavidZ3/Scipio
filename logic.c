@@ -81,6 +81,7 @@ void display_Selection(uint8_t clock_Current, uint8_t mode, Profile profile_Sele
             break;
         case CLOCK:
             disp_Set(t.hour, t.min); // displays the time
+            //disp_Set(t.min, t.sec); // displays the time
             disp_Blink(colon_Status);
             break;
     }
@@ -141,7 +142,7 @@ void alarm_Check(Profile profile_Selected, Time t, uint8_t* feed_Status, int8_t*
                     // Indicates that an alarm has been triggered this minute
                     *feed_Status = 1;   
                     // Sets feed cycles while ensuring the time spent feeding is independent of DELAY_TIME
-                    *feed_Cycles = profile_Selected.feed[index] * 200/DELAY_TIME;
+                    *feed_Cycles = profile_Selected.feed[index] * (200/DELAY_TIME);
                     return;
                 }
             }

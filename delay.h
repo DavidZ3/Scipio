@@ -41,6 +41,10 @@ Errors and omissions should be reported to codelibraries@exploreembedded.com
 #ifndef _DELAY_H
 #define _DELAY_H
 
+#ifndef F_CPU
+#define F_CPU 1000000UL
+#endif
+
 #include <util\delay.h>
 #include"stdutils.h"
 

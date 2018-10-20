@@ -118,11 +118,9 @@ int main(void)
     while (1) 
     {
         // Turns off the motor at the start of each loop
-        if(feed_Cycles <= 0){
-            feed_Cycles = 0;
+        if(feed_Cycles == 0){
+            feed_Cycles = -1;
             PORTB &= ~(0b1100);
-            //disp_Set(99,99);
-            DELAY_ms(500);
         }        
         // Gets the button pressed
         button_Pressed = button_Get(&previous);
@@ -153,7 +151,7 @@ int main(void)
         
         // Used to display the correct clock/feed selection
         // If feed_Cycles is not zero then display that instead later on.
-        if(feed_Cycles <= 0){
+        if(feed_Cycles == -1){
             display_Selection(clock_Current, mode, *profile_Selected, t, colon_Status);
         }
                 
@@ -183,11 +181,14 @@ int main(void)
             PORTB |= 0b1100;
             
             // display the cycles left
-            disp_Set(00, feed_Cycles*DELAY_TIME/200);
+            disp_Set(00, feed_Cycles);
             
             // reduce cycles
-            feed_Cycles = feed_Cycles -1;
-        } 
+            if(feed_Cycles > 0){
+                feed_Cycles = feed_Cycles -1;
+            }            
+        }
+         
         
 		// Check if there are button inputs
         DELAY_ms(DELAY_TIME/SPEED); // Wait DELAY_TIME milliseconds after each loop cycle 

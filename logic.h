@@ -14,8 +14,10 @@
 
 /**************************** Control* ************************************/
 #define RTC_STATUS  1   // Define as 1 to use RTC
+#ifndef F_CPU
+#define F_CPU 1000000UL
+#endif
 
-#define     F_CPU       1000000UL
 #define     DELAY_TIME  100   // Sets the pause period (ms)
 #define     SPEED       1     // Increases the system operation speed (default speed is 1)
 
