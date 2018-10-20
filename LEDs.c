@@ -23,11 +23,15 @@ void port_Init()
 }
 
 void profile_Number_LED(uint8_t profile_Number){
-    PORTB &= ~(0b11);           // clears bit 1 and bit 0
-    PORTB |= profile_Number;    // sets bit 1 and 0
+    PORTB &= (~0b100010);        // clears bit 5 and bit 4
+    PORTB |= (profile_Number & 1)<<1;  // sets bit 5 and bit 4
+    PORTB |= (profile_Number & 2)<<4;
+    
+    
 }
 
 void clock_Current_LED(uint8_t clock_Current){
-    PORTB &= (~(0b11 << 4));        // clears bit 5 and bit 4
-    PORTB |= (clock_Current << 4);  // sets bit 5 and bit 4
+    PORTB &= ~(0b010001);           // clears bit 1 and bit 0
+    PORTB |= clock_Current & 1;    // sets bit 1 and 0
+    PORTB |= ((clock_Current & 2)<<3);   
 }
