@@ -14,7 +14,7 @@
 /**************************** Constants ************************************/
 #define NUM_OF_INPUTS   7
 // Allocate numbers to buttons
-enum buttons{Next_Profile, Next_Clock, Set_Alarm, Up, Down, Set_Feed, Manual_Dispense, None};
+enum buttons{Next_Clock, Next_Profile, Set_Alarm, Up, Down, Set_Feed, Manual_Dispense, None};
 /***************************************************************************/
 
 /**************************** Typedef **************************************/
