@@ -17,7 +17,7 @@
 #include    "logic.h"
 #include    "LEDs.h"
 
-// The following *.h are downloaded from the ExploreEmbedded Code Libraray
+// The following *.h are downloaded from the ExploreEmbedded Code Library
 #include    "delay.h"
 #include    "rtc.h"
 
