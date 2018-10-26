@@ -1,5 +1,5 @@
 /***************************************************************************** 
-* File: Feed Dispenser Backend.c
+* File: main.c
 * Created: 28/08/2018 2:59:11 PM
 * Author : David Zhou
 *
